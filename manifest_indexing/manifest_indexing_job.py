@@ -45,7 +45,6 @@ if __name__ == "__main__":
         host_url,
         input_data_json.get("thread_nums", 1),
         auth,
-        input_data_json.get("prefix"),
         input_data_json.get("replace_urls"),
     )
 
