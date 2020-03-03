@@ -16,7 +16,7 @@ from utils import (
 
 from gen3.tools.indexing import manifest_indexing
 
-logging.basicConfig(filename="manifest_indexing.log", level=logging.info)
+logging.basicConfig(filename="manifest_indexing.log", level=logging.INFO)
 logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
 
