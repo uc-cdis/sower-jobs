@@ -5,14 +5,19 @@ Attributes:
 """
 
 import os
+import sys
 import json
+import logging
 
 from utils import (
     download_file,
     upload_file_to_s3_and_generate_presigned_url
 )
 
-from gen3.tools.manifest_indexing import manifest_indexing
+from gen3.tools.indexing import manifest_indexing
+
+logging.basicConfig(filename="manifest_indexing.log", level=logging.DEBUG)
+logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
 
 if __name__ == "__main__":
@@ -40,7 +45,7 @@ if __name__ == "__main__":
     if not host_url:
         host_url = "https://{}/index".format(hostname)
 
-    log_file, output_manifest = manifest_indexing(
+    output_manifest = manifest_indexing(
         filepath,
         host_url,
         input_data_json.get("thread_nums", 1),
@@ -51,12 +56,10 @@ if __name__ == "__main__":
     log_file_presigned_url = (
         upload_file_to_s3_and_generate_presigned_url(
             indexing_creds["bucket"],
-            log_file,
+            "manifest_indexing.log",
             aws_access_key_id,
             aws_secret_access_key,
         )
-        if log_file
-        else None
     )
 
     output_manifest_presigned_url = (
