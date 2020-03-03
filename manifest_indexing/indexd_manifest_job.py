@@ -19,6 +19,8 @@ if __name__ == "__main__":
     input_data = os.environ["INPUT_DATA"]
 
     input_data_json = json.loads(input_data)
+    if not input_data_json:
+        input_data_json = {}
 
     with open("/manifest-indexing-creds.json") as indexing_creds_file:
         indexing_creds = json.load(indexing_creds_file)
