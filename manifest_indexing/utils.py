@@ -1,3 +1,4 @@
+import csv
 import random
 import requests
 from datetime import datetime
@@ -13,10 +14,47 @@ def randomString(stringLength=10):
     letters = string.ascii_lowercase
     return "".join(random.choice(letters) for i in range(stringLength))
 
+
 def download_file(url, filename):
     r = requests.get(url)
     with open(filename, "wb") as f:
         f.write(r.content)
+
+
+def write_csv(filename, files, fieldnames=None):
+    """
+    write to csv file
+
+    Args:
+        filename(str): file name
+        files(list(dict)): list of file info
+        [
+            {
+                "GUID": "guid_example",
+                "filename": "example",
+                "size": 100,
+                "acl": "['open']",
+                "md5": "md5_hash",
+            },
+        ]
+        fieldnames(list(str)): list of column names
+
+    Returns:
+        None
+    """
+
+    if not files:
+        return None
+    fieldnames = fieldnames or files[0].keys()
+    with open(filename, mode="w") as outfile:
+        writer = csv.DictWriter(outfile, delimiter="\t", fieldnames=fieldnames)
+        writer.writeheader()
+
+        for f in files:
+            writer.writerow(f)
+
+    return filename
+
 
 def upload_file(
     file_name,
@@ -84,6 +122,7 @@ def create_presigned_url(
         return None
     # The response contains the presigned URL
     return response
+
 
 def upload_file_to_s3_and_generate_presigned_url(
     bucket_name,

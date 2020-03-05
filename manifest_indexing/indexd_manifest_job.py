@@ -10,9 +10,7 @@ import asyncio
 
 from gen3.tools import indexing
 
-from utils import (
-    upload_file_to_s3_and_generate_presigned_url
-)
+from utils import upload_file_to_s3_and_generate_presigned_url
 
 if __name__ == "__main__":
     hostname = os.environ["GEN3_HOSTNAME"]
@@ -33,7 +31,7 @@ if __name__ == "__main__":
     common_url = input_data_json.get("host")
     if not common_url:
         common_url = "https://{}".format(hostname)
-    
+
     num_process = input_data_json.get("num_processes", 1)
     max_concurrent_requests = input_data_json.get("max_concurrent_requests", 8)
 
@@ -47,14 +45,12 @@ if __name__ == "__main__":
             max_concurrent_requests=max_concurrent_requests,
         )
     )
-    
-    output_manifest_presigned_url = (
-        upload_file_to_s3_and_generate_presigned_url(
-            indexing_creds.get("bucket"),
-            "object-manifest.csv",
-            aws_access_key_id,
-            aws_secret_access_key,
-        )
+
+    output_manifest_presigned_url = upload_file_to_s3_and_generate_presigned_url(
+        indexing_creds.get("bucket"),
+        "object-manifest.csv",
+        aws_access_key_id,
+        aws_secret_access_key,
     )
 
     print("[out] {}".format(output_manifest_presigned_url))
