@@ -19,6 +19,8 @@ if __name__ == "__main__":
     input_data = os.environ["INPUT_DATA"]
 
     input_data_json = json.loads(input_data)
+    if not input_data_json:
+        input_data_json = {}
 
     with open("/manifest-indexing-creds.json") as indexing_creds_file:
         indexing_creds = json.load(indexing_creds_file)
@@ -26,11 +28,14 @@ if __name__ == "__main__":
     aws_access_key_id = indexing_creds.get("aws_access_key_id")
     aws_secret_access_key = indexing_creds.get("aws_secret_access_key")
 
-    print("Start to download_manifest index the manifest ...")
+    print("Start to download manifest ...")
 
     common_url = input_data_json.get("host")
     if not common_url:
         common_url = "https://{}".format(hostname)
+    
+    num_process = input_data_json.get("num_processes", 1)
+    max_concurrent_requests = input_data_json.get("max_concurrent_requests", 8)
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
@@ -38,8 +43,8 @@ if __name__ == "__main__":
         indexing.async_download_object_manifest(
             common_url,
             output_filename="object-manifest.csv",
-            num_processes=8,
-            max_concurrent_requests=24,
+            num_processes=num_process,
+            max_concurrent_requests=max_concurrent_requests,
         )
     )
     
