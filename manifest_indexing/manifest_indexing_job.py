@@ -9,12 +9,9 @@ import sys
 import json
 import logging
 
-from utils import (
-    download_file,
-    upload_file_to_s3_and_generate_presigned_url
-)
+from utils import write_csv, download_file, upload_file_to_s3_and_generate_presigned_url
 
-from gen3.tools.indexing import manifest_indexing
+from gen3.tools.indexing import index_object_manifest
 
 logging.basicConfig(filename="manifest_indexing.log", level=logging.INFO)
 logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
@@ -45,32 +42,30 @@ if __name__ == "__main__":
     if not host_url:
         host_url = "https://{}/index".format(hostname)
 
-    output_manifest = manifest_indexing(
-        filepath,
+    files, headers = index_object_manifest(
         host_url,
+        filepath,
         input_data_json.get("thread_nums", 1),
         auth,
         input_data_json.get("replace_urls"),
+        input_data_json.get("delimiter", "\t"),
     )
 
-    log_file_presigned_url = (
-        upload_file_to_s3_and_generate_presigned_url(
-            indexing_creds["bucket"],
-            "manifest_indexing.log",
-            aws_access_key_id,
-            aws_secret_access_key,
-        )
+    output_manifest = "./output_manifest.tsv"
+    write_csv(output_manifest, files, headers)
+
+    log_file_presigned_url = upload_file_to_s3_and_generate_presigned_url(
+        indexing_creds["bucket"],
+        "manifest_indexing.log",
+        aws_access_key_id,
+        aws_secret_access_key,
     )
 
-    output_manifest_presigned_url = (
-        upload_file_to_s3_and_generate_presigned_url(
-            indexing_creds["bucket"],
-            output_manifest,
-            aws_access_key_id,
-            aws_secret_access_key,
-        )
-        if output_manifest
-        else None
+    output_manifest_presigned_url = upload_file_to_s3_and_generate_presigned_url(
+        indexing_creds["bucket"],
+        output_manifest,
+        aws_access_key_id,
+        aws_secret_access_key,
     )
 
     print("[out] {} {}".format(log_file_presigned_url, output_manifest_presigned_url))
