@@ -7,7 +7,5 @@ COPY . /gen3
 
 WORKDIR /gen3
 
-RUN python setup.py install
-
 ENTRYPOINT [ "python" ]
 CMD [ "manifest_indexing_job.py" ]
