@@ -7,14 +7,17 @@ Attributes:
 import os
 import json
 import asyncio
+import sys
 
 from gen3.tools import indexing
 
-from utils import upload_file_to_s3_and_generate_presigned_url
+from settings import JOB_REQUIRES
+from utils import upload_file_to_s3_and_generate_presigned_url, check_user_permission
 
 if __name__ == "__main__":
     hostname = os.environ["GEN3_HOSTNAME"]
     input_data = os.environ["INPUT_DATA"]
+    access_token = os.environ["ACCESS_TOKEN"]
 
     input_data_json = json.loads(input_data)
     if not input_data_json:
@@ -22,6 +25,14 @@ if __name__ == "__main__":
 
     with open("/manifest-indexing-creds.json") as indexing_creds_file:
         indexing_creds = json.load(indexing_creds_file)
+
+    # check if user has sower and indexing policies
+    is_allowed, message = check_user_permission(
+        access_token, indexing_creds.get("job_requires", JOB_REQUIRES)
+    )
+    if not is_allowed:
+        print("[out]: {}".format(message["message"]))
+        sys.exit()
 
     aws_access_key_id = indexing_creds.get("aws_access_key_id")
     aws_secret_access_key = indexing_creds.get("aws_secret_access_key")
