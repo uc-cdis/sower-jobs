@@ -11,6 +11,7 @@ import logging
 
 from gen3.tools.indexing import index_object_manifest
 
+from settings import JOB_REQUIRES
 from utils import (
     write_csv,
     download_file,
@@ -27,16 +28,16 @@ if __name__ == "__main__":
     input_data = os.environ["INPUT_DATA"]
     access_token = os.environ["ACCESS_TOKEN"]
 
-    input_data_json = json.loads(input_data)
+    with open("/manifest-indexing-creds.json") as indexing_creds_file:
+        indexing_creds = json.load(indexing_creds_file)
 
     # check if user has sower and indexing policies
-    is_allowed, message = check_user_permission(access_token)
+    is_allowed, message = check_user_permission(
+        access_token, indexing_creds.get("job_requires", JOB_REQUIRES)
+    )
     if not is_allowed:
         print("[out]: {}".format(message["message"]))
         sys.exit()
-
-    with open("/manifest-indexing-creds.json") as indexing_creds_file:
-        indexing_creds = json.load(indexing_creds_file)
 
     auth = (
         indexing_creds.get("indexd_user", "gdcapi"),
@@ -44,6 +45,8 @@ if __name__ == "__main__":
     )
     aws_access_key_id = indexing_creds.get("aws_access_key_id")
     aws_secret_access_key = indexing_creds.get("aws_secret_access_key")
+
+    input_data_json = json.loads(input_data)
 
     filepath = "./manifest_tmp.tsv"
     download_file(input_data_json["URL"], filepath)
@@ -80,6 +83,4 @@ if __name__ == "__main__":
         aws_secret_access_key,
     )
 
-    print(
-        "[out] {} {}".format(log_file_presigned_url, output_manifest_presigned_url)
-    )
+    print("[out] {} {}".format(log_file_presigned_url, output_manifest_presigned_url))
