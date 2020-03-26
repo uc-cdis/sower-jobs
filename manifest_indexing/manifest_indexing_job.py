@@ -8,7 +8,6 @@ import os
 import sys
 import json
 import logging
-import requests
 
 from gen3.tools.indexing import index_object_manifest
 
@@ -34,52 +33,53 @@ if __name__ == "__main__":
     is_allowed, message = check_user_permission(access_token)
     if not is_allowed:
         print("[out]: {}".format(message["message"]))
-    else:
-        with open("/manifest-indexing-creds.json") as indexing_creds_file:
-            indexing_creds = json.load(indexing_creds_file)
+        sys.exit()
 
-        auth = (
-            indexing_creds.get("indexd_user", "gdcapi"),
-            indexing_creds["indexd_password"],
-        )
-        aws_access_key_id = indexing_creds.get("aws_access_key_id")
-        aws_secret_access_key = indexing_creds.get("aws_secret_access_key")
+    with open("/manifest-indexing-creds.json") as indexing_creds_file:
+        indexing_creds = json.load(indexing_creds_file)
 
-        filepath = "./manifest_tmp.tsv"
-        download_file(input_data_json["URL"], filepath)
+    auth = (
+        indexing_creds.get("indexd_user", "gdcapi"),
+        indexing_creds["indexd_password"],
+    )
+    aws_access_key_id = indexing_creds.get("aws_access_key_id")
+    aws_secret_access_key = indexing_creds.get("aws_secret_access_key")
 
-        print("Start to index the manifest ...")
+    filepath = "./manifest_tmp.tsv"
+    download_file(input_data_json["URL"], filepath)
 
-        host_url = input_data_json.get("host")
-        if not host_url:
-            host_url = "https://{}/index".format(hostname)
+    print("Start to index the manifest ...")
 
-        files, headers = index_object_manifest(
-            host_url,
-            filepath,
-            input_data_json.get("thread_nums", 1),
-            auth,
-            input_data_json.get("replace_urls"),
-            input_data_json.get("delimiter", "\t"),
-        )
+    host_url = input_data_json.get("host")
+    if not host_url:
+        host_url = "https://{}/index".format(hostname)
 
-        output_manifest = "./output_manifest.tsv"
-        write_csv(output_manifest, files, headers)
+    files, headers = index_object_manifest(
+        host_url,
+        filepath,
+        input_data_json.get("thread_nums", 1),
+        auth,
+        input_data_json.get("replace_urls"),
+        input_data_json.get("delimiter", "\t"),
+    )
 
-        log_file_presigned_url = upload_file_to_s3_and_generate_presigned_url(
-            indexing_creds["bucket"],
-            "manifest_indexing.log",
-            aws_access_key_id,
-            aws_secret_access_key,
-        )
+    output_manifest = "./output_manifest.tsv"
+    write_csv(output_manifest, files, headers)
 
-        output_manifest_presigned_url = upload_file_to_s3_and_generate_presigned_url(
-            indexing_creds["bucket"],
-            output_manifest,
-            aws_access_key_id,
-            aws_secret_access_key,
-        )
+    log_file_presigned_url = upload_file_to_s3_and_generate_presigned_url(
+        indexing_creds["bucket"],
+        "manifest_indexing.log",
+        aws_access_key_id,
+        aws_secret_access_key,
+    )
 
-        print(
-            "[out] {} {}".format(log_file_presigned_url, output_manifest_presigned_url)
-        )
+    output_manifest_presigned_url = upload_file_to_s3_and_generate_presigned_url(
+        indexing_creds["bucket"],
+        output_manifest,
+        aws_access_key_id,
+        aws_secret_access_key,
+    )
+
+    print(
+        "[out] {} {}".format(log_file_presigned_url, output_manifest_presigned_url)
+    )
