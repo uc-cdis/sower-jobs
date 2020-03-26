@@ -7,8 +7,6 @@ import logging
 import boto3
 from botocore.exceptions import ClientError
 
-from settings import ARBORIST_URL
-
 
 def randomString(stringLength=10):
     """Generate a random string of fixed length """
@@ -171,18 +169,35 @@ def upload_file_to_s3_and_generate_presigned_url(
     return None
 
 
-def check_user_permission(access_token):
+def check_user_permission(access_token, job_requires):
     """
     Check if user has permission to run the job or not
 
     Args:
         access_token(str): the access token
+        job_requires(dict): requirements so that job can run
+            {
+                "arborist_url": "http://arborist-service",
+                "job_access_req": (
+                    [
+                        {"resource": "/sower", "action": {"service": "job", "method": "access"}},
+                        {"resource": "/programs", "action": {"service": "indexd", "method": "write"}},
+                    ],
+                )
+            }
     Returns:
         bool: if user has permission to run the job or not
         dict: a message log
     """
-    response = requests.get(
-        "{}/auth/mapping".format(ARBORIST_URL), headers={"Authorization": access_token}
+
+    params = {
+        "user": {"token": access_token},
+        "requests": job_requires["job_access_req"],
+    }
+    response = requests.post(
+        "{}/auth/request".format(job_requires["job_access_req"]),
+        headers={"content-type": "application/json"},
+        json=params,
     )
     if response.status_code != 200:
         return (
@@ -190,14 +205,7 @@ def check_user_permission(access_token):
             {"message": "Can not run the job. Detail {}".format(response.json())},
         )
 
-    elif {"method": "access", "service": "job"} not in response.json().get(
-        "/sower", []
-    ) or {"method": "*", "service": "indexd"} not in response.json().get(
-        "/programs", []
-    ):
-        return (
-            False,
-            {"message": "User does not have privilege to run indexing job"},
-        )
+    elif not response.json()["auth"]:
+        return (False, {"message": "User does not have privilege to run indexing job"})
     else:
         return True, {"message": "OK"}
