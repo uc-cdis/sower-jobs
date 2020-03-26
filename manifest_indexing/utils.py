@@ -195,7 +195,7 @@ def check_user_permission(access_token, job_requires):
         "requests": job_requires["job_access_req"],
     }
     response = requests.post(
-        "{}/auth/request".format(job_requires["job_access_req"]),
+        "{}/auth/request".format(job_requires["arborist_url"].strip("/")),
         headers={"content-type": "application/json"},
         json=params,
     )

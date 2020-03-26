@@ -7,6 +7,6 @@ JOB_REQUIRES = {
                 "resource": "/programs",
                 "action": {"service": "indexd", "method": "write"},
             },
-        ],
+        ]
     ),
 }
