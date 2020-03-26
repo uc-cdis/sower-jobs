@@ -9,26 +9,23 @@ import json
 import asyncio
 import requests
 
-from settings import ARBORIST_URL
 from gen3.tools import indexing
 
-from utils import upload_file_to_s3_and_generate_presigned_url
+from utils import upload_file_to_s3_and_generate_presigned_url, check_user_permission
 
 if __name__ == "__main__":
     hostname = os.environ["GEN3_HOSTNAME"]
     input_data = os.environ["INPUT_DATA"]
+    access_token = os.environ["ACCESS_TOKEN"]
 
     input_data_json = json.loads(input_data)
     if not input_data_json:
         input_data_json = {}
-    
-    response = requests.get("{}/auth/resources".format(ARBORIST_URL), headers={"Authorization": access_token})
-    if response.status_code !=200:
-        print("[out] can not run the job. Detail {}".format(response.json()))
-    elif "/sower" not in response.json().get("resources", []) or "/indexing" not in response.json().get("resources", []):
-        print("[out] user does not have privilege to run indexing job")
-    else:
 
+    is_allowed, message = check_user_permission(access_token)
+    if not is_allowed:
+        print("[out]: {}".format(message["message"]))
+    else:
         with open("/manifest-indexing-creds.json") as indexing_creds_file:
             indexing_creds = json.load(indexing_creds_file)
 

@@ -10,10 +10,14 @@ import json
 import logging
 import requests
 
-from utils import write_csv, download_file, upload_file_to_s3_and_generate_presigned_url
-from settings import ARBORIST_URL
-
 from gen3.tools.indexing import index_object_manifest
+
+from utils import (
+    write_csv,
+    download_file,
+    upload_file_to_s3_and_generate_presigned_url,
+    check_user_permission,
+)
 
 logging.basicConfig(filename="manifest_indexing.log", level=logging.INFO)
 logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
@@ -26,12 +30,10 @@ if __name__ == "__main__":
 
     input_data_json = json.loads(input_data)
 
-    # check if user has sower and indexing policies 
-    response = requests.get("{}/auth/resources".format(ARBORIST_URL), headers={"Authorization": access_token})
-    if response.status_code !=200:
-        print("[out] can not run the job. Detail {}".format(response.json()))
-    elif "/sower" not in response.json().get("resources", []) or "/indexing" not in response.json().get("resources", []):
-        print("[out] user does not have privilege to run indexing job")
+    # check if user has sower and indexing policies
+    is_allowed, message = check_user_permission(access_token)
+    if not is_allowed:
+        print("[out]: {}".format(message["message"]))
     else:
         with open("/manifest-indexing-creds.json") as indexing_creds_file:
             indexing_creds = json.load(indexing_creds_file)
@@ -78,4 +80,6 @@ if __name__ == "__main__":
             aws_secret_access_key,
         )
 
-        print("[out] {} {}".format(log_file_presigned_url, output_manifest_presigned_url))
+        print(
+            "[out] {} {}".format(log_file_presigned_url, output_manifest_presigned_url)
+        )

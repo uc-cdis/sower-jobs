@@ -7,6 +7,8 @@ import logging
 import boto3
 from botocore.exceptions import ClientError
 
+from settings import ARBORIST_URL
+
 
 def randomString(stringLength=10):
     """Generate a random string of fixed length """
@@ -152,3 +154,29 @@ def upload_file_to_s3_and_generate_presigned_url(
             return presigned_url
 
     return None
+
+
+def check_user_permission(access_token):
+    """
+    Check if user has permission to run the job or not
+    """
+    response = requests.get(
+        "{}/auth/mapping".format(ARBORIST_URL), headers={"Authorization": access_token}
+    )
+    if response.status_code != 200:
+        return (
+            False,
+            {"message": "Can not run the job. Detail {}".format(response.json())},
+        )
+
+    elif {"method": "access", "service": "job"} not in response.json().get(
+        "/sower", []
+    ) or {"method": "*", "service": "indexd"} not in response.json().get(
+        "/programs", []
+    ):
+        return (
+            False,
+            {"message": "User does not have privilege to run indexing job"},
+        )
+    else:
+        return True, {"message": "OK"}
