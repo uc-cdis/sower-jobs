@@ -1,6 +1,7 @@
 """
 Module for metadata ingestion actions using sower job dispatcher
 """
+import os
 import sys
 import json
 import logging
