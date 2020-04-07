@@ -9,7 +9,7 @@ Repos for storing all sower jobs
   "action": "ingest-metadata-manifest",
   "container": {
     "name": "job-task",
-    "image": "quay.io/cdis/manifest-ingestion:master",
+    "image": "quay.io/cdis/metadata-manifest-ingestion:master",
     "pull_policy": "Always",
     "env": [
       {
