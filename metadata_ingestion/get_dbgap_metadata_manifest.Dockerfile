@@ -7,7 +7,7 @@ RUN pip install boto3==1.11.11
 
 RUN apt-get update
 RUN apt-get install -y git
-RUN apt install pipenv
+RUN apt install -y pipenv
 
 COPY . /gen3
 
