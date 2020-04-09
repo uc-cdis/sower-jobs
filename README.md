@@ -208,3 +208,25 @@ The secret `manifestindexing-g3auto` should be a JSON blob with:
   "aws_secret_access_key": "bar"
 }
 ```
+
+
+## Setting up Image Build in Quay
+
+* Go to quay.io and "Create a new repository" by clicking the plus at the top
+* Use whatever name you want, you'll need to use this same name in the "image" option in the above example configurations
+  * For example, we can use `get-dbgap-metadata` and then reference the image with `quay.io/cdis/get-dbgap-metadata:master`
+* Select "Public" visibility and "Link to a Github Repository Push"
+* Click "Create Public Repo" button
+* Select the uc-cdis org and find this repo (sower-jobs)
+* Keep default "Trigger for all branches and tags (default)" option
+* Hit "Continue" button
+* Leave defaults for "Configure Tagging" section
+* Hit "Continue" button
+* For "Select Dockerfile" enter the path to the new Dockerfile you're trying to build
+  * NOTE: If you're trying to build something on a branch for testing this box won't autopopulate but you can still type the path to the file on the branch and it'll work
+  * Example: `/metadata_ingestion/get_dbgap_metadata_manifest.Dockerfile`
+* For "Select Context" section, enter the folder path to where the Dockerfile is
+  * Example: `/metadata_ingestion`
+* If the dockerfile is on a branch you may get a warning "Verification Warning: Specified Dockerfile path for the trigger was not found on the main branch. This trigger may fail."
+  * This is fine. Hit "Continue" button
+* Hit final green "Continue" button!
