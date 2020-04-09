@@ -12,17 +12,15 @@ COPY . /gen3
 
 WORKDIR /gen3
 
-RUN git clone https://github.com/uc-cdis/dbgap-extract.git
-RUN cd dbgap-extract
-RUN git pull origin master
-
-# get the latest release/tag
-RUN git fetch --tags
-RUN tag=$(git describe --tags `git rev-list --tags --max-count=1`)
-RUN git checkout $tag -b latest
-
-RUN pipenv install
-RUN ..
+# get the dbgap extract tool and pull latest release/tag
+RUN git clone https://github.com/uc-cdis/dbgap-extract.git \
+    && cd dbgap-extract \
+    && git pull origin master \
+    && git fetch --tags \
+    && tag=$(git describe --tags `git rev-list --tags --max-count=1`) \
+    && git checkout $tag -b latest \
+    && pipenv install \
+    && cd ..
 
 ENTRYPOINT [ "python" ]
 CMD [ "get_dbgap_metadata_manifest.py" ]
