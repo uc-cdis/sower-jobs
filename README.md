@@ -1,7 +1,11 @@
 # sower-jobs
 Repos for storing all sower jobs
 
-## Metadata Ingestion
+## Metadata
+
+### Metadata Ingestion
+
+Contains job for ingesting metadata from a file.
 
 ```json
 {
@@ -22,15 +26,74 @@ Repos for storing all sower jobs
         }
       }
     ],
-    "volumeMounts": [],
+    "volumeMounts": [
+      {
+        "name": "creds-volume",
+        "readOnly": true,
+        "mountPath": "/creds.json",
+        "subPath": "config.json"
+      }
+    ],
     "cpu-limit": "1",
     "memory-limit": "1Gi"
   },
-  "volumes": [],
+  "volumes": [
+    {
+      "name": "creds-volume",
+      "secret": {
+        "secretName": "manifestindexing-g3auto"
+      }
+    }
+  ],
   "restart_policy": "Never"
 }
 ```
 
+### Get dbGaP Metadata File
+
+Contains job to parse dbGaP and associate samples to indexed file objects and returns the file. You can then QA the file and use the "Metadata Ingestion" job above to get the metadata into a commons.
+
+```json
+{
+  "name": "get-dbgap-metadata",
+  "action": "get-dbgap-metadata",
+  "container": {
+    "name": "job-task",
+    "image": "quay.io/cdis/get-dbgap-metadata:master",
+    "pull_policy": "Always",
+    "env": [
+      {
+        "name": "GEN3_HOSTNAME",
+        "valueFrom": {
+          "configMapKeyRef": {
+            "name": "manifest-global",
+            "key": "hostname"
+          }
+        }
+      }
+    ],
+    "volumeMounts": [
+      {
+        "name": "creds-volume",
+        "readOnly": true,
+        "mountPath": "/creds.json",
+        "subPath": "config.json"
+      }
+    ],
+    "cpu-limit": "1",
+    "memory-limit": "1Gi"
+  },
+  "volumes": [
+    {
+      "name": "creds-volume",
+      "secret": {
+        "secretName": "manifestindexing-g3auto"
+      }
+    }
+  ],
+  "restart_policy": "Never"
+}
+```
 
 ### Manifest Indexing
 

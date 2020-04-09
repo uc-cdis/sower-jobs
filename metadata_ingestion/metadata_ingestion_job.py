@@ -59,6 +59,21 @@ def main():
         )
     )
 
+    with open("/creds.json") as creds_file:
+        creds = json.load(creds_file)
+
+    aws_access_key_id = creds.get("aws_access_key_id")
+    aws_secret_access_key = creds.get("aws_secret_access_key")
+
+    log_file_presigned_url = upload_file_to_s3_and_generate_presigned_url(
+        creds.get("bucket"),
+        "manifest_ingestion.log",
+        aws_access_key_id,
+        aws_secret_access_key,
+    )
+
+    print("[out] {}".format(log_file_presigned_url))
+
 
 if __name__ == "__main__":
     main()

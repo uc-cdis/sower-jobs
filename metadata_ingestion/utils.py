@@ -57,3 +57,45 @@ def check_user_permission(access_token, job_requires):
         return (False, {"message": "User does not have privilege to run indexing job"})
     else:
         return True, {"message": "OK"}
+
+
+def upload_file_to_s3_and_generate_presigned_url(
+    bucket_name,
+    filename,
+    aws_access_key_id=None,
+    aws_secret_access_key=None,
+    expiration=3600,
+):
+    """
+    Upload and generate presigned url
+
+    Args:
+        bucket_name(str): the bucket name
+        filename(str): the input file needs to be uploaded
+        aws_access_key_id(str): aws access key id
+        aws_secret_access_key(str): aws secret access key
+        expiration(int): expiration time
+
+    Returns:
+        str: presigned url
+    """
+
+    now = datetime.now()
+
+    if filename and bucket_name:
+        current_time = now.strftime("%m_%d_%y_%H:%M:%S")
+        upload_file_key = "{}_{}.log".format(current_time, randomString(6))
+
+        if upload_file(
+            filename,
+            bucket_name,
+            upload_file_key,
+            aws_access_key_id,
+            aws_secret_access_key,
+        ):
+            presigned_url = create_presigned_url(
+                bucket_name, upload_file_key, aws_access_key_id, aws_secret_access_key
+            )
+            return presigned_url
+
+    return None
