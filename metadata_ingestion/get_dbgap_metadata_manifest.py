@@ -1,5 +1,18 @@
 """
 Module for metadata ingestion actions using sower job dispatcher
+
+Example input:
+
+{
+    "phsid_list": "phs000956 phs000920",
+    "indexing_manifest_url": "indexing_manifest.csv",
+    "manifests_mapping_config": {
+        "guid_column_name": "guid",
+        "row_column_name": "submitted_sample_id",
+        "smaller_file_column_name": "urls",
+    },
+    "partial_match_or_exact_match": "partial_match",
+}
 """
 import os
 import sys
@@ -29,26 +42,13 @@ logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 INPUT_DATA = os.environ.get("INPUT_DATA")
 ACCESS_TOKEN = os.environ.get("ACCESS_TOKEN")
 
-# INPUT_DATA = json.dumps(
-#     {
-#         "phsid_list": "phs000956 phs000920",
-#         "indexing_manifest_url": "indexing_manifest.csv",
-#         "manifests_mapping_config": {
-#             "guid_column_name": "guid",
-#             "row_column_name": "submitted_sample_id",
-#             "smaller_file_column_name": "urls",
-#         },
-#         "partial_match_or_exact_match": "partial_match",
-#     }
-# )
-
 
 def main():
     # check if user has sower and ingestion policies
-    # is_allowed, message = check_user_permission(ACCESS_TOKEN, JOB_REQUIRES)
-    # if not is_allowed:
-    #     print("[out]: {}".format(message["message"]))
-    #     sys.exit()
+    is_allowed, message = check_user_permission(ACCESS_TOKEN, JOB_REQUIRES)
+    if not is_allowed:
+        print("[out]: {}".format(message["message"]))
+        sys.exit()
 
     input_data_json = json.loads(INPUT_DATA)
 
