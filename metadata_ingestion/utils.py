@@ -8,6 +8,13 @@ import boto3
 from botocore.exceptions import ClientError
 
 
+def randomString(stringLength=10):
+    """Generate a random string of fixed length """
+
+    letters = string.ascii_lowercase
+    return "".join(random.choice(letters) for i in range(stringLength))
+
+
 def download_file(url, filename):
     """
     Download data from url and save the content to filename
@@ -17,46 +24,107 @@ def download_file(url, filename):
         f.write(r.content)
 
 
-def check_user_permission(access_token, job_requires):
+def write_csv(filename, files, fieldnames=None):
     """
-    Check if user has permission to run the job or not
+    write to csv file
 
     Args:
-        access_token(str): the access token
-        job_requires(dict): requirements so that job can run
+        filename(str): file name
+        files(list(dict)): list of file info
+        [
             {
-                "arborist_url": "http://arborist-service",
-                "job_access_req": (
-                    [
-                        {"resource": "/sower", "action": {"service": "job", "method": "access"}},
-                        {"resource": "/programs", "action": {"service": "indexd", "method": "write"}},
-                    ],
-                )
-            }
+                "GUID": "guid_example",
+                "filename": "example",
+                "size": 100,
+                "acl": "['open']",
+                "md5": "md5_hash",
+            },
+        ]
+        fieldnames(list(str)): list of column names
+
     Returns:
-        bool: if user has permission to run the job or not
-        dict: a message log
+        filename(str): file name
     """
 
-    params = {
-        "user": {"token": access_token},
-        "requests": job_requires["job_access_req"],
-    }
-    response = requests.post(
-        "{}/auth/request".format(job_requires["arborist_url"].strip("/")),
-        headers={"content-type": "application/json"},
-        json=params,
-    )
-    if response.status_code != 200:
-        return (
-            False,
-            {"message": "Can not run the job. Detail {}".format(response.json())},
-        )
+    if not files:
+        return None
+    fieldnames = fieldnames or files[0].keys()
+    with open(filename, mode="w") as outfile:
+        writer = csv.DictWriter(outfile, delimiter="\t", fieldnames=fieldnames)
+        writer.writeheader()
 
-    elif not response.json()["auth"]:
-        return (False, {"message": "User does not have privilege to run indexing job"})
-    else:
-        return True, {"message": "OK"}
+        for f in files:
+            writer.writerow(f)
+
+    return filename
+
+
+def upload_file(
+    file_name,
+    bucket,
+    object_name=None,
+    aws_access_key_id=None,
+    aws_secret_access_key=None,
+):
+    """Upload a file to an S3 bucket
+
+    :param file_name: File to upload
+    :param bucket: Bucket to upload to
+    :param object_name: S3 object name. If not specified then file_name is used
+    :aws_access_key_id: string
+    :aws_secret_access_key: string
+    :return: True if file was uploaded, else False
+    """
+    # If S3 object_name was not specified, use file_name
+    if object_name is None:
+        object_name = file_name
+    # Upload the file
+    s3_client = boto3.client(
+        "s3",
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key,
+    )
+    try:
+        s3_client.upload_file(file_name, bucket, object_name)
+    except ClientError as e:
+        logging.error(e)
+        return False
+    return True
+
+
+def create_presigned_url(
+    bucket_name,
+    object_name,
+    aws_access_key_id=None,
+    aws_secret_access_key=None,
+    expiration=3600,
+):
+    """Generate a presigned URL to share an S3 object
+
+    :param bucket_name: string
+    :param object_name: string
+    :aws_access_key_id: string
+    :aws_secret_access_key: string
+    :param expiration: Time in seconds for the presigned URL to remain valid
+    :return: Presigned URL as string. If error, returns None.
+    """
+    # Generate a presigned URL for the S3 object
+    s3_client = boto3.client(
+        "s3",
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key,
+    )
+    try:
+        response = s3_client.generate_presigned_url(
+            "get_object",
+            Params={"Bucket": bucket_name, "Key": object_name},
+            ExpiresIn=expiration,
+        )
+    except ClientError as e:
+        print(e)
+        return None
+    # The response contains the presigned URL
+    return response
 
 
 def upload_file_to_s3_and_generate_presigned_url(
@@ -99,3 +167,45 @@ def upload_file_to_s3_and_generate_presigned_url(
             return presigned_url
 
     return None
+
+
+def check_user_permission(access_token, job_requires):
+    """
+    Check if user has permission to run the job or not
+
+    Args:
+        access_token(str): the access token
+        job_requires(dict): requirements so that job can run
+            {
+                "arborist_url": "http://arborist-service",
+                "job_access_req": (
+                    [
+                        {"resource": "/sower", "action": {"service": "job", "method": "access"}},
+                        {"resource": "/programs", "action": {"service": "indexd", "method": "write"}},
+                    ],
+                )
+            }
+    Returns:
+        bool: if user has permission to run the job or not
+        dict: a message log
+    """
+
+    params = {
+        "user": {"token": access_token},
+        "requests": job_requires["job_access_req"],
+    }
+    response = requests.post(
+        "{}/auth/request".format(job_requires["arborist_url"].strip("/")),
+        headers={"content-type": "application/json"},
+        json=params,
+    )
+    if response.status_code != 200:
+        return (
+            False,
+            {"message": "Can not run the job. Detail {}".format(response.json())},
+        )
+
+    elif not response.json()["auth"]:
+        return (False, {"message": "User does not have privilege to run indexing job"})
+    else:
+        return True, {"message": "OK"}
