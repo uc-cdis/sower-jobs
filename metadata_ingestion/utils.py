@@ -8,13 +8,6 @@ import boto3
 from botocore.exceptions import ClientError
 
 
-def randomString(stringLength=10):
-    """Generate a random string of fixed length """
-
-    letters = string.ascii_lowercase
-    return "".join(random.choice(letters) for i in range(stringLength))
-
-
 def download_file(url, filename):
     """
     Download data from url and save the content to filename
@@ -152,7 +145,7 @@ def upload_file_to_s3_and_generate_presigned_url(
 
     if filename and bucket_name:
         current_time = now.strftime("%m_%d_%y_%H:%M:%S")
-        upload_file_key = "{}_{}.log".format(current_time, randomString(6))
+        upload_file_key = "{}_{}".format(current_time, filename)
 
         if upload_file(
             filename,
