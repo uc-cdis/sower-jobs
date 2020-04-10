@@ -17,7 +17,11 @@ from gen3.tools.merge import (
 )
 
 from settings import JOB_REQUIRES
-from utils import download_file, check_user_permission
+from utils import (
+    download_file,
+    check_user_permission,
+    upload_file_to_s3_and_generate_presigned_url,
+)
 
 logging.basicConfig(filename="manifest_merge.log", level=logging.DEBUG)
 logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
