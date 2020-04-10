@@ -61,17 +61,7 @@ Contains job to parse dbGaP and associate samples to indexed file objects and re
     "name": "job-task",
     "image": "quay.io/cdis/get-dbgap-metadata:master",
     "pull_policy": "Always",
-    "env": [
-      {
-        "name": "GEN3_HOSTNAME",
-        "valueFrom": {
-          "configMapKeyRef": {
-            "name": "manifest-global",
-            "key": "hostname"
-          }
-        }
-      }
-    ],
+    "env": [],
     "volumeMounts": [
       {
         "name": "creds-volume",

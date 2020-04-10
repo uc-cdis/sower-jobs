@@ -52,7 +52,6 @@ def main():
 
     input_data_json = json.loads(INPUT_DATA)
 
-    os.system("ls")
     os.system(
         f"python ./dbgap-extract/dbgap_extract.py --study_accession_list "
         f"{input_data_json['phsid_list']} --output_filename metadata_manifest.tsv "
