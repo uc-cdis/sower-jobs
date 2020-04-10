@@ -63,7 +63,7 @@ def main():
     indexing_manifest = "indexing_manifest." + indexing_file_ext
     metadata_manifest = "metadata_manifest.tsv"
 
-    # download_file(input_data_json["indexing_manifest_url"], indexing_manifest)
+    download_file(input_data_json["indexing_manifest_url"], indexing_manifest)
 
     # what column to use as the final GUID for metadata (this MUST exist in the
     # smaller file, which is expected to be the indexing file)
