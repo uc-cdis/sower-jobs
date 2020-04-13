@@ -9,7 +9,7 @@ Contains job for ingesting metadata from a file.
 
 ```json
 {
-  "name": "metadata-ingestion",
+  "name": "ingest-metadata-manifest",
   "action": "ingest-metadata-manifest",
   "container": {
     "name": "job-task",
