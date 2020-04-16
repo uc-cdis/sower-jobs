@@ -1,5 +1,13 @@
 """
 Module for metadata ingestion actions using sower job dispatcher
+
+Example input:
+
+{
+    "URL": "metadata_manifest.tsv",
+    "metadata_source": "dbgap",
+    "host": "https://example-commons.com/"
+}
 """
 import os
 import sys

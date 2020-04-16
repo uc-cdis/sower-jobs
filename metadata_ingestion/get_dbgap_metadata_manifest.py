@@ -9,7 +9,7 @@ Example input:
     "manifests_mapping_config": {
         "guid_column_name": "guid",
         "row_column_name": "submitted_sample_id",
-        "smaller_file_column_name": "urls",
+        "indexing_manifest_column_name": "urls",
     },
     "partial_match_or_exact_match": "partial_match",
 }
@@ -69,7 +69,7 @@ def main():
     download_file(input_data_json["indexing_manifest_url"], indexing_manifest)
 
     # what column to use as the final GUID for metadata (this MUST exist in the
-    # smaller file, which is expected to be the indexing file)
+    # indexing file)
     manifests_mapping_config["guid_column_name"] = input_data_json.get(
         "manifests_mapping_config", {}
     ).get("guid_column_name", "guid")
@@ -79,19 +79,18 @@ def main():
         "manifests_mapping_config", {}
     ).get("row_column_name", "submitted_sample_id")
 
-    # smaller file by default is expected to be the "indexing file"
     # this configuration tells the function to use the "urls" column
     # from the "indexing file" to map to the metadata column configured above
     # (for partial matching the metdata data column to this column )
-    manifests_mapping_config["smaller_file_column_name"] = input_data_json.get(
+    manifests_mapping_config["indexing_manifest_column_name"] = input_data_json.get(
         "manifests_mapping_config", {}
-    ).get("smaller_file_column_name", "urls")
+    ).get("indexing_manifest_column_name", "urls")
 
     if input_data_json.get("partial_match_or_exact_match", "") == "partial_match":
         # by default, the functions for parsing the manifests and rows assumes a 1:1
         # mapping. There is an additional function provided for partial string matching
         # which we can use here.
-        manifest_row_parsers["guids_for_row"] = get_guids_for_row_partial_match
+        manifest_row_parsers["guids_for_manifest_row"] = get_guids_for_row_partial_match
 
     output_filename = "merged_metadata_manifest.tsv"
 
