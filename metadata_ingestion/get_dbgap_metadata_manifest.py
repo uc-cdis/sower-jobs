@@ -26,7 +26,7 @@ from gen3.tools.merge import (
     merge_guids_into_metadata,
     manifest_row_parsers,
     manifests_mapping_config,
-    get_guids_for_row_partial_match,
+    get_guids_for_manifest_row_partial_match,
 )
 
 from settings import JOB_REQUIRES
@@ -90,7 +90,9 @@ def main():
         # by default, the functions for parsing the manifests and rows assumes a 1:1
         # mapping. There is an additional function provided for partial string matching
         # which we can use here.
-        manifest_row_parsers["guids_for_manifest_row"] = get_guids_for_row_partial_match
+        manifest_row_parsers[
+            "guids_for_manifest_row"
+        ] = get_guids_for_manifest_row_partial_match
 
     output_filename = "merged_metadata_manifest.tsv"
 
