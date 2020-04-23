@@ -28,8 +28,14 @@ if __name__ == "__main__":
     input_data = os.environ["INPUT_DATA"]
     access_token = os.environ["ACCESS_TOKEN"]
 
-    with open("/manifest-indexing-creds.json") as indexing_creds_file:
-        indexing_creds = json.load(indexing_creds_file)
+    with open("/creds.json") as indexing_creds_file:
+        job_name = "index-object-manifest"
+        indexing_creds = json.load(indexing_creds_file).get(job_name, {})
+        if not indexing_creds:
+            logging.warning(
+                f"No configuration found for '{job_name}' job. "
+                "Attempting to continue anyway..."
+            )
 
     # check if user has sower and indexing policies
     is_allowed, message = check_user_permission(

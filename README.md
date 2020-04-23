@@ -41,7 +41,7 @@ Contains job for ingesting metadata from a file.
     {
       "name": "creds-volume",
       "secret": {
-        "secretName": "manifestindexing-g3auto"
+        "secretName": "sowerjobs-g3auto"
       }
     }
   ],
@@ -77,7 +77,7 @@ Contains job to parse dbGaP and associate samples to indexed file objects and re
     {
       "name": "creds-volume",
       "secret": {
-        "secretName": "manifestindexing-g3auto"
+        "secretName": "sowerjobs-g3auto"
       }
     }
   ],
@@ -114,9 +114,9 @@ The following is a manifest config for indexing manifest job and downloading ind
     ],
     "volumeMounts": [
       {
-        "name": "manifest-indexing-creds-volume",
+        "name": "sower-jobs-creds-volume",
         "readOnly": true,
-        "mountPath": "/manifest-indexing-creds.json",
+        "mountPath": "/creds.json",
         "subPath": "config.json"
       }
     ],
@@ -125,9 +125,9 @@ The following is a manifest config for indexing manifest job and downloading ind
   },
   "volumes": [
     {
-      "name": "manifest-indexing-creds-volume",
+      "name": "sower-jobs-creds-volume",
       "secret": {
-        "secretName": "manifestindexing-g3auto"
+        "secretName": "sowerjobs-g3auto"
       }
     }
   ],
@@ -156,9 +156,9 @@ The following is a manifest config for indexing manifest job and downloading ind
     ],
     "volumeMounts": [
       {
-        "name": "manifest-indexing-creds-volume",
+        "name": "sower-jobs-creds-volume",
         "readOnly": true,
-        "mountPath": "/manifest-indexing-creds.json",
+        "mountPath": "/creds.json",
         "subPath": "config.json"
       }
     ],
@@ -167,9 +167,9 @@ The following is a manifest config for indexing manifest job and downloading ind
   },
   "volumes": [
     {
-      "name": "manifest-indexing-creds-volume",
+      "name": "sower-jobs-creds-volume",
       "secret": {
-        "secretName": "manifestindexing-g3auto"
+        "secretName": "sowerjobs-g3auto"
       }
     }
   ],
@@ -177,28 +177,105 @@ The following is a manifest config for indexing manifest job and downloading ind
 }
 ```
 
-
-The secret `manifestindexing-g3auto` should be a JSON blob with:
+The secret `sowerjobs-g3auto` should be a JSON blob with:
 
 ```json
 {
-  "job_requires": {
-    "arborist_url": "http://arborist-service",
-    "job_access_req": [
-      {
-        "resource": "/sower",
-        "action": {
-          "service": "job",
-          "method": "access"
+  "index-object-manifest": {
+    "job_requires": {
+      "arborist_url": "http://arborist-service",
+      "job_access_req": [
+        {
+          "resource": "/sower",
+          "action": {
+            "service": "job",
+            "method": "access"
+          }
+        },
+        {
+          "resource": "/programs",
+          "action": {
+            "service": "indexd",
+            "method": "write"
+          }
         }
-      }
-    ]
+      ]
+    },
+    "aws_access_key_id": "foo",
+    "aws_secret_access_key": "bar",
+    "bucket": "some-bucket",
+    "indexd_user": "",
+    "indexd_password": ""
   },
-  "aws_access_key_id": "foo",
-  "aws_secret_access_key": "bar"
+  "download-indexd-manifest": {
+    "job_requires": {
+      "arborist_url": "http://arborist-service",
+      "job_access_req": [
+        {
+          "resource": "/sower",
+          "action": {
+            "service": "job",
+            "method": "access"
+          }
+        }
+      ]
+    },
+    "aws_access_key_id": "foo",
+    "aws_secret_access_key": "bar",
+    "bucket": "some-bucket"
+  },
+  "get-dbgap-metadata": {
+    "job_requires": {
+      "arborist_url": "http://arborist-service",
+      "job_access_req": [
+        {
+          "resource": "/sower",
+          "action": {
+            "service": "job",
+            "method": "access"
+          }
+        },
+        {
+          "resource": "/mds_gateway",
+          "action": {
+            "service": "mds_gateway",
+            "method": "access"
+          }
+        }
+      ]
+    },
+    "aws_access_key_id": "foo",
+    "aws_secret_access_key": "bar",
+    "bucket": "some-bucket"
+  },
+  "ingest-metadata-manifest": {
+    "job_requires": {
+      "arborist_url": "http://arborist-service",
+      "job_access_req": [
+        {
+          "resource": "/sower",
+          "action": {
+            "service": "job",
+            "method": "access"
+          }
+        },
+        {
+          "resource": "/mds_gateway",
+          "action": {
+            "service": "mds_gateway",
+            "method": "access"
+          }
+        }
+      ]
+    },
+    "aws_access_key_id": "foo",
+    "aws_secret_access_key": "bar",
+    "bucket": "some-bucket"
+  }
 }
 ```
 
+> NOTE: some of the above fields will get set to a default value if not provided. Specifically you can leave out "arborist_url" and "job_access_req" and the default Arborist url and access requirements will be set. Also note that the "bucket" and AWS creds can be the same for all the jobs or different if necessary
 
 ## Setting up Image Build in Quay
 

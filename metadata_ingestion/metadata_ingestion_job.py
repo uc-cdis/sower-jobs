@@ -39,8 +39,22 @@ MANIFEST = "metadata_manifest.tsv"
 
 
 def main():
+    with open("/creds.json") as creds_file:
+        job_name = "ingest-metadata-manifest"
+        creds = json.load(creds_file).get(job_name, {})
+        if not creds:
+            logging.warning(
+                f"No configuration found for '{job_name}' job. "
+                "Attempting to continue anyway..."
+            )
+
+    # Only use provided authz requirement if it's not none or empty list/string
+    access_authz_requirement = JOB_REQUIRES
+    if creds.get("job_requires"):
+        access_authz_requirement = creds.get("job_requires")
+
     # check if user has sower and ingestion policies
-    is_allowed, message = check_user_permission(ACCESS_TOKEN, JOB_REQUIRES)
+    is_allowed, message = check_user_permission(ACCESS_TOKEN, access_authz_requirement)
     if not is_allowed:
         print("[out]: {}".format(message["message"]))
         sys.exit()
@@ -70,9 +84,6 @@ def main():
             auth=auth,
         )
     )
-
-    with open("/creds.json") as creds_file:
-        creds = json.load(creds_file)
 
     aws_access_key_id = creds.get("aws_access_key_id")
     aws_secret_access_key = creds.get("aws_secret_access_key")

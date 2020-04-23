@@ -23,13 +23,22 @@ if __name__ == "__main__":
     if not input_data_json:
         input_data_json = {}
 
-    with open("/manifest-indexing-creds.json") as indexing_creds_file:
-        indexing_creds = json.load(indexing_creds_file)
+    with open("/creds.json") as indexing_creds_file:
+        job_name = "download-indexd-manifest"
+        indexing_creds = json.load(indexing_creds_file).get(job_name, {})
+        if not indexing_creds:
+            logging.warning(
+                f"No configuration found for '{job_name}' job. "
+                "Attempting to continue anyway..."
+            )
 
-    # check if user has sower and indexing policies
-    is_allowed, message = check_user_permission(
-        access_token, indexing_creds.get("job_requires", JOB_REQUIRES)
-    )
+    # Only use provided authz requirement if it's not empty
+    access_authz_requirement = JOB_REQUIRES
+    if creds.get("job_requires"):
+        access_authz_requirement = creds.get("job_requires")
+
+    # check if user has sower and ingestion policies
+    is_allowed, message = check_user_permission(ACCESS_TOKEN, access_authz_requirement)
     if not is_allowed:
         print("[out]: {}".format(message["message"]))
         sys.exit()
