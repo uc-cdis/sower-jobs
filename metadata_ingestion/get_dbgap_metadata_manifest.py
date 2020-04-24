@@ -126,6 +126,8 @@ def main():
     )
 
     print("[out] {} {}".format(log_file_presigned_url, output_manifest_presigned_url))
+    while True:
+        pass
 
 
 if __name__ == "__main__":
