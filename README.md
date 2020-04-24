@@ -9,7 +9,7 @@ Contains job for ingesting metadata from a file.
 
 > NOTE: These job configurations assume you have setup Service Accounts in k8s with fine-grained IAM roles in AWS to interact with an S3 bucket. See [Cloud Automation docs](https://github.com/uc-cdis/cloud-automation/blob/master/doc/iam-serviceaccount.md).
 
-> IMPORTANT NOTE: You must supply the correct "serviceAccountName" in the following examples
+> IMPORTANT NOTE: You must supply the correct "serviceAccountName" in the following examples. By default these are in the form "sower-jobs-${environment//\_/-}-sa0" where environvment is from the cdis-manifest ".global.environment" field
 
 ```json
 {

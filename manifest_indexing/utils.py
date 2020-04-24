@@ -78,13 +78,19 @@ def upload_file(
     # If S3 object_name was not specified, use file_name
     if object_name is None:
         object_name = file_name
+
     # Upload the file
-    s3_client = boto3.client(
-        "s3",
-        aws_access_key_id=aws_access_key_id,
-        aws_secret_access_key=aws_secret_access_key,
-    )
+    if aws_access_key_id and aws_secret_access_key:
+        s3_client = boto3.client(
+            "s3",
+            aws_access_key_id=aws_access_key_id,
+            aws_secret_access_key=aws_secret_access_key,
+        )
+    else:
+        s3_client = boto3.client("s3")
+
     try:
+        logging.info(f"upload_file {file_name} in {bucket}, object: {object_name}")
         s3_client.upload_file(file_name, bucket, object_name)
     except ClientError as e:
         logging.error(e)
@@ -109,12 +115,19 @@ def create_presigned_url(
     :return: Presigned URL as string. If error, returns None.
     """
     # Generate a presigned URL for the S3 object
-    s3_client = boto3.client(
-        "s3",
-        aws_access_key_id=aws_access_key_id,
-        aws_secret_access_key=aws_secret_access_key,
-    )
+    if aws_access_key_id and aws_secret_access_key:
+        s3_client = boto3.client(
+            "s3",
+            aws_access_key_id=aws_access_key_id,
+            aws_secret_access_key=aws_secret_access_key,
+        )
+    else:
+        s3_client = boto3.client("s3")
+
     try:
+        logging.info(
+            f"generate_presigned_url {object_name} in {bucket_name}, exp: {expiration}"
+        )
         response = s3_client.generate_presigned_url(
             "get_object",
             Params={"Bucket": bucket_name, "Key": object_name},
@@ -134,7 +147,7 @@ def upload_file_to_s3_and_generate_presigned_url(
     aws_secret_access_key=None,
     expiration=3600,
 ):
-    """ 
+    """
     Upload and generate presigned url
 
     Args:
@@ -143,7 +156,7 @@ def upload_file_to_s3_and_generate_presigned_url(
         aws_access_key_id(str): aws access key id
         aws_secret_access_key(str): aws secret access key
         expiration(int): expiration time
-    
+
     Returns:
         str: presigned url
     """
