@@ -90,7 +90,9 @@ def upload_file(
         s3_client = boto3.client("s3")
 
     try:
-        logging.info(f"upload_file {file_name} in {bucket}, object: {object_name}")
+        msg = f"upload_file {file_name} in {bucket}, object: {object_name}"
+        print(msg)
+        logging.info(msg)
         s3_client.upload_file(file_name, bucket, object_name)
     except ClientError as e:
         logging.error(e)
@@ -125,9 +127,11 @@ def create_presigned_url(
         s3_client = boto3.client("s3")
 
     try:
-        logging.info(
+        msg = (
             f"generate_presigned_url {object_name} in {bucket_name}, exp: {expiration}"
         )
+        print(msg)
+        logging.info(msg)
         response = s3_client.generate_presigned_url(
             "get_object",
             Params={"Bucket": bucket_name, "Key": object_name},
