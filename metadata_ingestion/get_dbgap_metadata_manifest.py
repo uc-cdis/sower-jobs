@@ -118,17 +118,11 @@ def main():
         manifest_row_parsers=manifest_row_parsers,
     )
 
-    aws_access_key_id = creds.get("aws_access_key_id")
-    aws_secret_access_key = creds.get("aws_secret_access_key")
-
     log_file_presigned_url = upload_file_to_s3_and_generate_presigned_url(
-        creds.get("bucket"),
-        "manifest_merge.log",
-        aws_access_key_id,
-        aws_secret_access_key,
+        creds.get("bucket"), "manifest_merge.log"
     )
     output_manifest_presigned_url = upload_file_to_s3_and_generate_presigned_url(
-        creds.get("bucket"), output_filename, aws_access_key_id, aws_secret_access_key
+        creds.get("bucket"), output_filename
     )
 
     print("[out] {} {}".format(log_file_presigned_url, output_manifest_presigned_url))

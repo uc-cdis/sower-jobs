@@ -49,9 +49,6 @@ if __name__ == "__main__":
         indexing_creds.get("indexd_user", "gdcapi"),
         indexing_creds["indexd_password"],
     )
-    aws_access_key_id = indexing_creds.get("aws_access_key_id")
-    aws_secret_access_key = indexing_creds.get("aws_secret_access_key")
-
     input_data_json = json.loads(input_data)
 
     filepath = "./manifest_tmp.tsv"
@@ -76,17 +73,11 @@ if __name__ == "__main__":
     write_csv(output_manifest, files, headers)
 
     log_file_presigned_url = upload_file_to_s3_and_generate_presigned_url(
-        indexing_creds["bucket"],
-        "manifest_indexing.log",
-        aws_access_key_id,
-        aws_secret_access_key,
+        indexing_creds["bucket"], "manifest_indexing.log"
     )
 
     output_manifest_presigned_url = upload_file_to_s3_and_generate_presigned_url(
-        indexing_creds["bucket"],
-        output_manifest,
-        aws_access_key_id,
-        aws_secret_access_key,
+        indexing_creds["bucket"], output_manifest
     )
 
     print("[out] {} {}".format(log_file_presigned_url, output_manifest_presigned_url))

@@ -85,14 +85,8 @@ def main():
         )
     )
 
-    aws_access_key_id = creds.get("aws_access_key_id")
-    aws_secret_access_key = creds.get("aws_secret_access_key")
-
     log_file_presigned_url = upload_file_to_s3_and_generate_presigned_url(
-        creds.get("bucket"),
-        "manifest_ingestion.log",
-        aws_access_key_id,
-        aws_secret_access_key,
+        creds.get("bucket"), "manifest_ingestion.log"
     )
 
     print("[out] {}".format(log_file_presigned_url))

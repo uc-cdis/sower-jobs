@@ -7,10 +7,15 @@ Repos for storing all sower jobs
 
 Contains job for ingesting metadata from a file.
 
+> NOTE: These job configurations assume you have setup Service Accounts in k8s with fine-grained IAM roles in AWS to interact with an S3 bucket. See [Cloud Automation docs](https://github.com/uc-cdis/cloud-automation/blob/master/doc/iam-serviceaccount.md).
+
+> IMPORTANT NOTE: You must supply the correct "serviceAccountName" in the following examples
+
 ```json
 {
   "name": "ingest-metadata-manifest",
   "action": "ingest-metadata-manifest",
+  "serviceAccountName": "sower-jobs-${environment//_/-}-sa",
   "container": {
     "name": "job-task",
     "image": "quay.io/cdis/metadata-manifest-ingestion:master",
@@ -57,6 +62,7 @@ Contains job to parse dbGaP and associate samples to indexed file objects and re
 {
   "name": "get-dbgap-metadata",
   "action": "get-dbgap-metadata",
+  "serviceAccountName": "sower-jobs-${environment//_/-}-sa",
   "container": {
     "name": "job-task",
     "image": "quay.io/cdis/get-dbgap-metadata:master",
@@ -97,6 +103,7 @@ The following is a manifest config for indexing manifest job and downloading ind
 {
   "name": "manifest-indexing",
   "action": "index-object-manifest",
+  "serviceAccountName": "sower-jobs-${environment//_/-}-sa",
   "container": {
     "name": "job-task",
     "image": "quay.io/cdis/manifest-indexing:master",
@@ -139,6 +146,7 @@ The following is a manifest config for indexing manifest job and downloading ind
 {
   "name": "indexd-manifest",
   "action": "download-indexd-manifest",
+  "serviceAccountName": "sower-jobs-${environment//_/-}-sa",
   "container": {
     "name": "job-task",
     "image": "quay.io/cdis/download-indexd-manifest:master",
@@ -201,8 +209,6 @@ The secret `sowerjobs-g3auto` should be a JSON blob with:
         }
       ]
     },
-    "aws_access_key_id": "foo",
-    "aws_secret_access_key": "bar",
     "bucket": "some-bucket",
     "indexd_user": "",
     "indexd_password": ""
@@ -220,8 +226,6 @@ The secret `sowerjobs-g3auto` should be a JSON blob with:
         }
       ]
     },
-    "aws_access_key_id": "foo",
-    "aws_secret_access_key": "bar",
     "bucket": "some-bucket"
   },
   "get-dbgap-metadata": {
@@ -244,8 +248,6 @@ The secret `sowerjobs-g3auto` should be a JSON blob with:
         }
       ]
     },
-    "aws_access_key_id": "foo",
-    "aws_secret_access_key": "bar",
     "bucket": "some-bucket"
   },
   "ingest-metadata-manifest": {
@@ -268,8 +270,6 @@ The secret `sowerjobs-g3auto` should be a JSON blob with:
         }
       ]
     },
-    "aws_access_key_id": "foo",
-    "aws_secret_access_key": "bar",
     "bucket": "some-bucket"
   }
 }

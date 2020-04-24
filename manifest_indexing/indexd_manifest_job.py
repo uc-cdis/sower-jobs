@@ -43,9 +43,6 @@ if __name__ == "__main__":
         print("[out]: {}".format(message["message"]))
         sys.exit()
 
-    aws_access_key_id = indexing_creds.get("aws_access_key_id")
-    aws_secret_access_key = indexing_creds.get("aws_secret_access_key")
-
     print("Start to download manifest ...")
 
     common_url = input_data_json.get("host")
@@ -67,10 +64,7 @@ if __name__ == "__main__":
     )
 
     output_manifest_presigned_url = upload_file_to_s3_and_generate_presigned_url(
-        indexing_creds.get("bucket"),
-        "object-manifest.csv",
-        aws_access_key_id,
-        aws_secret_access_key,
+        indexing_creds.get("bucket"), "object-manifest.csv"
     )
 
     print("[out] {}".format(output_manifest_presigned_url))
