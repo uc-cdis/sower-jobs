@@ -9,13 +9,13 @@ Contains job for ingesting metadata from a file.
 
 > NOTE: These job configurations assume you have setup Service Accounts in k8s with fine-grained IAM roles in AWS to interact with an S3 bucket. See [Cloud Automation docs](https://github.com/uc-cdis/cloud-automation/blob/master/doc/iam-serviceaccount.md).
 
-> IMPORTANT NOTE: You must supply the correct "serviceAccountName" in the following examples. By default these are in the form "sower-jobs-${environment//\_/-}-sa0" where environvment is from the cdis-manifest ".global.environment" field
+> IMPORTANT NOTE: You must supply the correct "serviceAccountName" in the following examples. By default these are in the form "sower-jobs-${hostname//./-}-sa". Example: `sower-jobs-example-planx-pla-net-sa`. Cloud Automation enables the creation of the necessary infrastructure (buckets, SAs, roles) by running `gen3 kube-setup-sower-jobs`.
 
 ```json
 {
   "name": "ingest-metadata-manifest",
   "action": "ingest-metadata-manifest",
-  "serviceAccountName": "sower-jobs-${environment//_/-}-sa",
+  "serviceAccountName": "sower-jobs-${hostname//./-}-sa",
   "container": {
     "name": "job-task",
     "image": "quay.io/cdis/metadata-manifest-ingestion:master",
@@ -62,7 +62,7 @@ Contains job to parse dbGaP and associate samples to indexed file objects and re
 {
   "name": "get-dbgap-metadata",
   "action": "get-dbgap-metadata",
-  "serviceAccountName": "sower-jobs-${environment//_/-}-sa",
+  "serviceAccountName": "sower-jobs-${hostname//./-}-sa",
   "container": {
     "name": "job-task",
     "image": "quay.io/cdis/get-dbgap-metadata:master",
@@ -103,7 +103,7 @@ The following is a manifest config for indexing manifest job and downloading ind
 {
   "name": "manifest-indexing",
   "action": "index-object-manifest",
-  "serviceAccountName": "sower-jobs-${environment//_/-}-sa",
+  "serviceAccountName": "sower-jobs-${hostname//./-}-sa",
   "container": {
     "name": "job-task",
     "image": "quay.io/cdis/manifest-indexing:master",
@@ -146,7 +146,7 @@ The following is a manifest config for indexing manifest job and downloading ind
 {
   "name": "indexd-manifest",
   "action": "download-indexd-manifest",
-  "serviceAccountName": "sower-jobs-${environment//_/-}-sa",
+  "serviceAccountName": "sower-jobs-${hostname//./-}-sa",
   "container": {
     "name": "job-task",
     "image": "quay.io/cdis/download-indexd-manifest:master",
