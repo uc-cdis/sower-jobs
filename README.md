@@ -36,7 +36,7 @@ Contains job for ingesting metadata from a file.
         "name": "creds-volume",
         "readOnly": true,
         "mountPath": "/creds.json",
-        "subPath": "config.json"
+        "subPath": "creds.json"
       }
     ],
     "cpu-limit": "1",
@@ -46,7 +46,7 @@ Contains job for ingesting metadata from a file.
     {
       "name": "creds-volume",
       "secret": {
-        "secretName": "sowerjobs-g3auto"
+        "secretName": "sower-jobs-g3auto"
       }
     }
   ],
@@ -73,7 +73,7 @@ Contains job to parse dbGaP and associate samples to indexed file objects and re
         "name": "creds-volume",
         "readOnly": true,
         "mountPath": "/creds.json",
-        "subPath": "config.json"
+        "subPath": "creds.json"
       }
     ],
     "cpu-limit": "1",
@@ -83,7 +83,7 @@ Contains job to parse dbGaP and associate samples to indexed file objects and re
     {
       "name": "creds-volume",
       "secret": {
-        "secretName": "sowerjobs-g3auto"
+        "secretName": "sower-jobs-g3auto"
       }
     }
   ],
@@ -124,7 +124,7 @@ The following is a manifest config for indexing manifest job and downloading ind
         "name": "sower-jobs-creds-volume",
         "readOnly": true,
         "mountPath": "/creds.json",
-        "subPath": "config.json"
+        "subPath": "creds.json"
       }
     ],
     "cpu-limit": "1",
@@ -134,7 +134,7 @@ The following is a manifest config for indexing manifest job and downloading ind
     {
       "name": "sower-jobs-creds-volume",
       "secret": {
-        "secretName": "sowerjobs-g3auto"
+        "secretName": "sower-jobs-g3auto"
       }
     }
   ],
@@ -167,7 +167,7 @@ The following is a manifest config for indexing manifest job and downloading ind
         "name": "sower-jobs-creds-volume",
         "readOnly": true,
         "mountPath": "/creds.json",
-        "subPath": "config.json"
+        "subPath": "creds.json"
       }
     ],
     "cpu-limit": "1",
@@ -177,7 +177,7 @@ The following is a manifest config for indexing manifest job and downloading ind
     {
       "name": "sower-jobs-creds-volume",
       "secret": {
-        "secretName": "sowerjobs-g3auto"
+        "secretName": "sower-jobs-g3auto"
       }
     }
   ],
@@ -185,7 +185,7 @@ The following is a manifest config for indexing manifest job and downloading ind
 }
 ```
 
-The secret `sowerjobs-g3auto` should be a JSON blob with:
+The secret `sower-jobs-g3auto` should be setup automatically with Cloud Automation and contains a JSON blob with:
 
 ```json
 {
@@ -275,7 +275,7 @@ The secret `sowerjobs-g3auto` should be a JSON blob with:
 }
 ```
 
-> NOTE: some of the above fields will get set to a default value if not provided. Specifically you can leave out "arborist_url" and "job_access_req" and the default Arborist url and access requirements will be set. Also note that the "bucket" and AWS creds can be the same for all the jobs or different if necessary
+> NOTE: some of the above fields will get set to a default value if not provided or empty. Specifically you can leave out "arborist_url" and "job_access_req" and the default Arborist url and access requirements will be set. Also note that the "bucket" and AWS creds can be the same for all the jobs or different if necessary
 
 ## Setting up Image Build in Quay
 

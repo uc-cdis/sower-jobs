@@ -53,9 +53,9 @@ def main():
                 "Attempting to continue anyway..."
             )
 
-    # Only use provided authz requirement if it's not empty
+    # Only use provided authz requirement if resources are not empty
     access_authz_requirement = JOB_REQUIRES
-    if creds.get("job_requires"):
+    if creds.get("job_requires", {}).get("job_access_req"):
         access_authz_requirement = creds.get("job_requires")
 
     # check if user has sower and ingestion policies
@@ -126,8 +126,6 @@ def main():
     )
 
     print("[out] {} {}".format(log_file_presigned_url, output_manifest_presigned_url))
-    while True:
-        pass
 
 
 if __name__ == "__main__":
