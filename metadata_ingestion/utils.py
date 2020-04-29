@@ -84,7 +84,6 @@ def upload_file(
 
     try:
         msg = f"upload_file {file_name} in {bucket}, object: {object_name}"
-        print(msg)
         logging.info(msg)
         s3_client.upload_file(file_name, bucket, object_name)
     except ClientError as e:
@@ -123,7 +122,6 @@ def create_presigned_url(
         msg = (
             f"generate_presigned_url {object_name} in {bucket_name}, exp: {expiration}"
         )
-        print(msg)
         logging.info(msg)
         response = s3_client.generate_presigned_url(
             "get_object",
@@ -216,6 +214,6 @@ def check_user_permission(access_token, job_requires):
         )
 
     elif not response.json()["auth"]:
-        return (False, {"message": "User does not have privilege to run indexing job"})
+        return (False, {"message": "User does not have privilege to run the job"})
     else:
         return True, {"message": "OK"}
