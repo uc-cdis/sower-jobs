@@ -28,13 +28,22 @@ if __name__ == "__main__":
     input_data = os.environ["INPUT_DATA"]
     access_token = os.environ["ACCESS_TOKEN"]
 
-    with open("/manifest-indexing-creds.json") as indexing_creds_file:
-        indexing_creds = json.load(indexing_creds_file)
+    with open("/creds.json") as indexing_creds_file:
+        job_name = "index-object-manifest"
+        indexing_creds = json.load(indexing_creds_file).get(job_name, {})
+        if not indexing_creds:
+            logging.warning(
+                f"No configuration found for '{job_name}' job. "
+                "Attempting to continue anyway..."
+            )
+
+    # Only use provided authz requirement if resources are not empty
+    access_authz_requirement = JOB_REQUIRES
+    if creds.get("job_requires", {}).get("job_access_req"):
+        access_authz_requirement = creds.get("job_requires")
 
     # check if user has sower and indexing policies
-    is_allowed, message = check_user_permission(
-        access_token, indexing_creds.get("job_requires", JOB_REQUIRES)
-    )
+    is_allowed, message = check_user_permission(access_token, access_authz_requirement)
     if not is_allowed:
         print("[out]: {}".format(message["message"]))
         sys.exit()
@@ -43,9 +52,6 @@ if __name__ == "__main__":
         indexing_creds.get("indexd_user", "gdcapi"),
         indexing_creds["indexd_password"],
     )
-    aws_access_key_id = indexing_creds.get("aws_access_key_id")
-    aws_secret_access_key = indexing_creds.get("aws_secret_access_key")
-
     input_data_json = json.loads(input_data)
 
     filepath = "./manifest_tmp.tsv"
@@ -70,17 +76,11 @@ if __name__ == "__main__":
     write_csv(output_manifest, files, headers)
 
     log_file_presigned_url = upload_file_to_s3_and_generate_presigned_url(
-        indexing_creds["bucket"],
-        "manifest_indexing.log",
-        aws_access_key_id,
-        aws_secret_access_key,
+        indexing_creds["bucket"], "manifest_indexing.log"
     )
 
     output_manifest_presigned_url = upload_file_to_s3_and_generate_presigned_url(
-        indexing_creds["bucket"],
-        output_manifest,
-        aws_access_key_id,
-        aws_secret_access_key,
+        indexing_creds["bucket"], output_manifest
     )
 
     print("[out] {} {}".format(log_file_presigned_url, output_manifest_presigned_url))

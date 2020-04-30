@@ -23,19 +23,25 @@ if __name__ == "__main__":
     if not input_data_json:
         input_data_json = {}
 
-    with open("/manifest-indexing-creds.json") as indexing_creds_file:
-        indexing_creds = json.load(indexing_creds_file)
+    with open("/creds.json") as indexing_creds_file:
+        job_name = "download-indexd-manifest"
+        indexing_creds = json.load(indexing_creds_file).get(job_name, {})
+        if not indexing_creds:
+            logging.warning(
+                f"No configuration found for '{job_name}' job. "
+                "Attempting to continue anyway..."
+            )
 
-    # check if user has sower and indexing policies
-    is_allowed, message = check_user_permission(
-        access_token, indexing_creds.get("job_requires", JOB_REQUIRES)
-    )
+    # Only use provided authz requirement if resources are not empty
+    access_authz_requirement = JOB_REQUIRES
+    if creds.get("job_requires", {}).get("job_access_req"):
+        access_authz_requirement = creds.get("job_requires")
+
+    # check if user has sower and ingestion policies
+    is_allowed, message = check_user_permission(ACCESS_TOKEN, access_authz_requirement)
     if not is_allowed:
         print("[out]: {}".format(message["message"]))
         sys.exit()
-
-    aws_access_key_id = indexing_creds.get("aws_access_key_id")
-    aws_secret_access_key = indexing_creds.get("aws_secret_access_key")
 
     print("Start to download manifest ...")
 
@@ -58,10 +64,7 @@ if __name__ == "__main__":
     )
 
     output_manifest_presigned_url = upload_file_to_s3_and_generate_presigned_url(
-        indexing_creds.get("bucket"),
-        "object-manifest.csv",
-        aws_access_key_id,
-        aws_secret_access_key,
+        indexing_creds.get("bucket"), "object-manifest.csv"
     )
 
     print("[out] {}".format(output_manifest_presigned_url))
