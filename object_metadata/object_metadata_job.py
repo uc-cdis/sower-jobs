@@ -52,8 +52,12 @@ def main():
         pass
 
     import time
+    count = 0
     while True:
         time.sleep(100)
+        count = count + 1
+        if count==10:
+            return
 
     
 if __name__ == "__main__":
