@@ -8,4 +8,4 @@ COPY . /gen3
 WORKDIR /gen3
 
 ENTRYPOINT [ "python" ]
-CMD [ "metadata_ingestion_job.py" ]
+CMD [ "object_metadata_job.py" ]

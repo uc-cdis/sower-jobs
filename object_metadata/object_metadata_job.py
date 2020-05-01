@@ -9,12 +9,12 @@ Example input:
     "host": "https://example-commons.com/"
 }
 """
+import sys
 import os
 import boto3
 import logging
 import hashlib
 from urllib.parse import unquote_plus
-i
 
 
 logging.basicConfig(filename="manifest_ingestion.log", level=logging.DEBUG)
@@ -50,6 +50,11 @@ def main():
         raise
     finally:
         pass
+
+    import time
+    while True:
+        time.sleep(100)
+
     
 if __name__ == "__main__":
     main()
