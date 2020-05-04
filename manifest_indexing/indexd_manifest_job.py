@@ -14,12 +14,13 @@ from gen3.tools import indexing
 from settings import JOB_REQUIRES
 from utils import upload_file_to_s3_and_generate_presigned_url, check_user_permission
 
-if __name__ == "__main__":
-    hostname = os.environ["GEN3_HOSTNAME"]
-    input_data = os.environ["INPUT_DATA"]
-    access_token = os.environ["ACCESS_TOKEN"]
+HOSTNAME = os.environ["GEN3_HOSTNAME"]
+INPUT_DATA = os.environ["INPUT_DATA"]
+ACCESS_TOKEN = os.environ["ACCESS_TOKEN"]
 
-    input_data_json = json.loads(input_data)
+if __name__ == "__main__":
+
+    input_data_json = json.loads(INPUT_DATA)
     if not input_data_json:
         input_data_json = {}
 
@@ -47,7 +48,7 @@ if __name__ == "__main__":
 
     common_url = input_data_json.get("host")
     if not common_url:
-        common_url = "https://{}".format(hostname)
+        common_url = "https://{}".format(HOSTNAME)
 
     num_process = input_data_json.get("num_processes", 1)
     max_concurrent_requests = input_data_json.get("max_concurrent_requests", 8)
