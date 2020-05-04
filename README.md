@@ -15,7 +15,7 @@ Contains job for ingesting metadata from a file.
 {
   "name": "ingest-metadata-manifest",
   "action": "ingest-metadata-manifest",
-  "serviceAccountName": "sower-jobs-${hostname//./-}-sa",
+  "serviceAccountName": "jobs-${hostname//./-}",
   "container": {
     "name": "job-task",
     "image": "quay.io/cdis/metadata-manifest-ingestion:master",
@@ -62,7 +62,7 @@ Contains job to parse dbGaP and associate samples to indexed file objects and re
 {
   "name": "get-dbgap-metadata",
   "action": "get-dbgap-metadata",
-  "serviceAccountName": "sower-jobs-${hostname//./-}-sa",
+  "serviceAccountName": "jobs-${hostname//./-}",
   "container": {
     "name": "job-task",
     "image": "quay.io/cdis/get-dbgap-metadata:master",
@@ -103,7 +103,7 @@ The following is a manifest config for indexing manifest job and downloading ind
 {
   "name": "manifest-indexing",
   "action": "index-object-manifest",
-  "serviceAccountName": "sower-jobs-${hostname//./-}-sa",
+  "serviceAccountName": "jobs-${hostname//./-}",
   "container": {
     "name": "job-task",
     "image": "quay.io/cdis/manifest-indexing:master",
@@ -146,7 +146,7 @@ The following is a manifest config for indexing manifest job and downloading ind
 {
   "name": "indexd-manifest",
   "action": "download-indexd-manifest",
-  "serviceAccountName": "sower-jobs-${hostname//./-}-sa",
+  "serviceAccountName": "jobs-${hostname//./-}",
   "container": {
     "name": "job-task",
     "image": "quay.io/cdis/download-indexd-manifest:master",
