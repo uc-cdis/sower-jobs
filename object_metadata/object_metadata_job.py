@@ -53,7 +53,7 @@ def main():
     finally:
         pass
 
-    sqs = boto3.resource('sqs')
+    sqs = boto3.resource('sqs', region_name="us-east-1")
     # Get the queue. This returns an SQS.Queue instance
     queue = sqs.get_queue_by_name(QueueName='terraform-example-queue')
 
