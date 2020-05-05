@@ -21,6 +21,8 @@ logging.basicConfig(filename="manifest_ingestion.log", level=logging.DEBUG)
 logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
 CHUNK_SIZE = 1024 * 1024 * 10
+ACCESS_KEY_ID = os.environ["ACCESS_KEY_ID"]
+SECRET_ACCESS_KEY = os.environ["SECRET_ACCESS_KEY"]
 BUCKET = os.environ["BUCKET"]
 S3KEY = os.environ["KEY"]
 
@@ -30,7 +32,7 @@ S3KEY = os.environ["KEY"]
 
 def main():
     md5_hash = hashlib.md5()
-    s3Client = boto3.client('s3', aws_access_key_id=os.getenv("ACCESS_KEY_ID"), aws_secret_access_key=os.getenv("SECRET_ACCESS_KEY"))
+    s3Client = boto3.client('s3', aws_access_key_id=ACCESS_KEY_ID, aws_secret_access_key=SECRET_ACCESS_KEY)
     try:
         # Assume it will succeed for now
         response = s3Client.get_object(
@@ -51,13 +53,23 @@ def main():
     finally:
         pass
 
-    import time
-    count = 0
-    while True:
-        time.sleep(100)
-        count = count + 1
-        if count==10:
-            return
+    sqs = boto3.resource('sqs')
+    # Get the queue. This returns an SQS.Queue instance
+    queue = sqs.get_queue_by_name(QueueName='terraform-example-queue')
+
+    # You can now access identifiers and attributes
+    print(queue.url)
+    print(queue.attributes.get('DelaySeconds'))
+    response = queue.send_message(MessageBody='md5: {}'.format(md5_hash.hexdigest()))
+
+
+    # import time
+    # count = 0
+    # while True:
+    #     time.sleep(100)
+    #     count = count + 1
+    #     if count==10:
+    #         return
 
     
 if __name__ == "__main__":
