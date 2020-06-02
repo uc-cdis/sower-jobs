@@ -59,9 +59,7 @@ if __name__ == "__main__":
 
     print("Start to index the manifest ...")
 
-    host_url = input_data_json.get("host")
-    if not host_url:
-        host_url = "https://{}/index".format(hostname)
+    host_url = "http://indexd-service/"
 
     files, headers = index_object_manifest(
         host_url,
