@@ -59,7 +59,7 @@ if __name__ == "__main__":
 
     print("Start to index the manifest ...")
 
-    host_url = "http://indexd-service/"
+    host_url = "http://revproxy-service/index/"
 
     files, headers = index_object_manifest(
         host_url,
