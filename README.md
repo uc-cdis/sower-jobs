@@ -9,7 +9,7 @@ Contains job for ingesting metadata from a file.
 
 > NOTE: These job configurations assume you have setup Service Accounts in k8s with fine-grained IAM roles in AWS to interact with an S3 bucket. See [Cloud Automation docs](https://github.com/uc-cdis/cloud-automation/blob/master/doc/iam-serviceaccount.md).
 
-> IMPORTANT NOTE: You must supply the correct "serviceAccountName" in the following examples. By default these are in the form "sower-jobs-${hostname//./-}-sa". Example: `sower-jobs-example-planx-pla-net-sa`. Cloud Automation enables the creation of the necessary infrastructure (buckets, SAs, roles) by running `gen3 kube-setup-sower-jobs`.
+> IMPORTANT NOTE: You must supply the correct "serviceAccountName" in the following examples. By default these are in the form "jobs-${hostname//./-}-sa". Example: `jobs-example-planx-pla-net-sa`. Cloud Automation enables the creation of the necessary infrastructure (buckets, SAs, roles) by running `gen3 kube-setup-sower-jobs`.
 
 ```json
 {
