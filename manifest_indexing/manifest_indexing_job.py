@@ -40,7 +40,7 @@ if __name__ == "__main__":
     # Only use provided authz requirement if resources are not empty
     access_authz_requirement = JOB_REQUIRES
     if indexing_creds.get("job_requires", {}).get("job_access_req"):
-        access_authz_requirement = creds.get("job_requires")
+        access_authz_requirement = indexing_creds.get("job_requires")
 
     # check if user has sower and indexing policies
     is_allowed, message = check_user_permission(access_token, access_authz_requirement)
