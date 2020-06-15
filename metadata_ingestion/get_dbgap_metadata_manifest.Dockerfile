@@ -1,6 +1,8 @@
 FROM python:3.6
 
-RUN pip install gen3==2.3.3
+# RUN pip install gen3==2.3.3
+RUN pip install git+https://github.com/uc-cdis/gen3sdk-python.git@fix/metadata-merge
+
 RUN pip install boto3==1.11.11
 
 RUN apt-get update
