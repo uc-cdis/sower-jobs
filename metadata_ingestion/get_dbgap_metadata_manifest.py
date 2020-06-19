@@ -132,8 +132,8 @@ def main():
 
 def remove_deleted_samples(dbgap_samples_file, output_file):
     manifest = {}
-    with open(output_file, "w+", encoding="utf-8-sig") as outputfile:
-        with open(dbgap_samples_file, "rt", encoding="utf-8") as inputfile:
+    with open(output_file, "w+", encoding="utf-8") as outputfile:
+        with open(dbgap_samples_file, "rt", encoding="utf-8-sig") as inputfile:
             headers_row = next(inputfile)
             outputfile.write(headers_row)
 
