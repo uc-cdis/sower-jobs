@@ -1,6 +1,6 @@
 FROM python:3.6
 
-RUN pip install gen3==2.3.3
+RUN pip install gen3==2.4.0
 RUN pip install boto3==1.11.11
 
 RUN apt-get update
