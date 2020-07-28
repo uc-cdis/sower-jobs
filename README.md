@@ -185,6 +185,56 @@ The following is a manifest config for indexing manifest job and downloading ind
 }
 ```
 
+### Manifest Merging
+
+It contains a job for merging bucket manifests of file objects, and can be set up with the following cdis-manifest configuration:
+
+```json
+{
+  "name": "manifest-merging",
+  "action": "merge-manifests",
+  "activeDeadlineSeconds": 86400,
+  "serviceAccountName": "jobs-${hostname//./-}",
+  "container": {
+    "name": "job-task",
+    "image": "quay.io/cdis/manifest-merging:master",
+    "pull_policy": "Always",
+    "env": [
+      {
+        "name": "GEN3_HOSTNAME",
+        "valueFrom": {
+          "configMapKeyRef": {
+            "name": "manifest-global",
+            "key": "hostname"
+          }
+        }
+      }
+    ],
+    "volumeMounts": [
+      {
+        "name": "sower-jobs-creds-volume",
+        "readOnly": true,
+        "mountPath": "/creds.json",
+        "subPath": "creds.json"
+      }
+    ],
+    "cpu-limit": "1",
+    "memory-limit": "1Gi"
+  },
+  "volumes": [
+    {
+      "name": "sower-jobs-creds-volume",
+      "secret": {
+        "secretName": "sower-jobs-g3auto"
+      }
+    }
+  ],
+  "restart_policy": "Never"
+}
+```
+
+### Kubernetes Secret
+
 The secret `sower-jobs-g3auto` should be setup automatically with Cloud Automation and contains a JSON blob with:
 
 ```json
