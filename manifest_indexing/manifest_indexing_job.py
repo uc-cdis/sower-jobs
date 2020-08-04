@@ -82,6 +82,7 @@ if __name__ == "__main__":
     log_file_presigned_url = upload_file_to_s3_and_generate_presigned_url(
         indexing_creds["bucket"], "manifest_indexing.log"
     )
+    log_file_presigned_url = log_file_presigned_url + "&abc"
     # output_manifest_presigned_url = upload_file_to_s3_and_generate_presigned_url(
     #     indexing_creds["bucket"], output_manifest
     # )
