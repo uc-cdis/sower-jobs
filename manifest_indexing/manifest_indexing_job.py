@@ -63,24 +63,28 @@ if __name__ == "__main__":
     if not host_url:
         host_url = "https://{}/index".format(hostname)
 
-    files, headers = index_object_manifest(
-        host_url,
-        filepath,
-        input_data_json.get("thread_nums", 1),
-        auth,
-        input_data_json.get("replace_urls"),
-        input_data_json.get("delimiter", "\t"),
-    )
+    try:
 
-    output_manifest = "./output_manifest.tsv"
-    write_csv(output_manifest, files, headers)
-
+        files, headers = index_object_manifest(
+            host_url,
+            filepath,
+            input_data_json.get("thread_nums", 1),
+            auth,
+            input_data_json.get("replace_urls"),
+            input_data_json.get("delimiter", "\t"),
+        )
+    except Exception as e:
+        logging.error(e)
+        pass
+        # output_manifest = "./output_manifest.tsv"
+        # write_csv(output_manifest, files, headers)
+        
     log_file_presigned_url = upload_file_to_s3_and_generate_presigned_url(
         indexing_creds["bucket"], "manifest_indexing.log"
     )
+    # output_manifest_presigned_url = upload_file_to_s3_and_generate_presigned_url(
+    #     indexing_creds["bucket"], output_manifest
+    # )
 
-    output_manifest_presigned_url = upload_file_to_s3_and_generate_presigned_url(
-        indexing_creds["bucket"], output_manifest
-    )
 
-    print("[out] {} {}".format(log_file_presigned_url, output_manifest_presigned_url))
+    print("[out] {}".format(log_file_presigned_url))
