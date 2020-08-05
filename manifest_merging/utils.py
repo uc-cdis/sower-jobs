@@ -9,7 +9,15 @@ from botocore.exceptions import ClientError
 
 
 def randomString(stringLength=10):
-    """Generate a random string of fixed length """
+    """
+    Generate a random string of fixed length
+
+    Arg:
+        stringLength(str): the desired length of the random string to generate
+
+    Returns:
+        str: the generated random string
+    """
 
     letters = string.ascii_lowercase
     return "".join(random.choice(letters) for i in range(stringLength))
@@ -22,14 +30,18 @@ def upload_file(
     aws_access_key_id=None,
     aws_secret_access_key=None,
 ):
-    """Upload a file to an S3 bucket
+    """
+    Upload a file to an S3 bucket
 
-    :param file_name: File to upload
-    :param bucket: Bucket to upload to
-    :param object_name: S3 object name. If not specified then file_name is used
-    :aws_access_key_id: string
-    :aws_secret_access_key: string
-    :return: True if file was uploaded, else False
+    Args:
+        file_name(str): file to upload
+        bucket(str): bucket to upload to
+        object_name(str): S3 object name. if not specified then file_name is used
+        aws_access_key_id(str): aws access key id
+        aws_secret_access_key(str): aws secret access key
+
+    Returns:
+        bool: True if file was uploaded, else False
     """
     # If S3 object_name was not specified, use file_name
     if object_name is None:
@@ -62,14 +74,18 @@ def create_presigned_url(
     aws_secret_access_key=None,
     expiration=3600,
 ):
-    """Generate a presigned URL to share an S3 object
+    """
+    Generate a presigned URL to share an S3 object
 
-    :param bucket_name: string
-    :param object_name: string
-    :aws_access_key_id: string
-    :aws_secret_access_key: string
-    :param expiration: Time in seconds for the presigned URL to remain valid
-    :return: Presigned URL as string. If error, returns None.
+    Args:
+        bucket_name(str): the bucket name
+        object_name(str): S3 object name
+        aws_access_key_id(str): aws access key id
+        aws_secret_access_key(str): aws secret access key
+        expiration(int): time in seconds for the presigned URL to remain valid
+
+    Returns:
+        str: presigned URL as string if successful. if error, returns None
     """
     # Generate a presigned URL for the S3 object
     if aws_access_key_id and aws_secret_access_key:
@@ -92,7 +108,7 @@ def create_presigned_url(
             ExpiresIn=expiration,
         )
     except ClientError as e:
-        print(e)
+        logging.error(e)
         return None
     # The response contains the presigned URL
     return response
