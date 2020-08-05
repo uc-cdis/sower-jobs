@@ -1,6 +1,6 @@
 FROM python:3.6
 
-RUN pip install gen3==2.3.3
+RUN pip install gen3==2.4.0
 RUN pip install boto3==1.11.11
 
 RUN apt-get update
@@ -16,7 +16,7 @@ RUN git clone https://github.com/uc-cdis/dbgap-extract.git \
     && cd dbgap-extract \
     && git pull origin master \
     && git fetch --tags \
-    && tag=$(git describe --tags `git rev-list --tags --max-count=1`) \
+    && tag=$(git describe --tags `git rev-list --max-count=1 --tags`) \
     && git checkout $tag -b latest \
     && pipenv install \
     && cd ..
