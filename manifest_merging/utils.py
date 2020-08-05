@@ -182,23 +182,6 @@ def check_user_permission(access_token, job_requires):
         return True, {"message": "OK"}
 
 
-def split_s3_path(s3_path):
-    """
-    Return bucket and key contained in s3_path
-
-    Args:
-        s3_path(str): s3 path formatted as "s3://{bucket}/{key}"
-
-    Returns:
-        tuple: (bucket, key)
-    """
-    s3_path = s3_path.replace("s3://", "")
-    split_position = s3_path.index("/")
-    bucket = s3_path[:split_position]
-    key = s3_path[split_position + 1 :]
-    return bucket, key
-
-
 def detect_delimiter(dsv_filename):
     """
     Detect and return delimiter used in dsv_filename

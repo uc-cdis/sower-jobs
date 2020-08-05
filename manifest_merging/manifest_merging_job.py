@@ -14,7 +14,6 @@ from settings import JOB_REQUIRES
 from utils import (
     check_user_permission,
     detect_delimiter,
-    split_s3_path,
     upload_file_to_s3_and_generate_presigned_url,
 )
 
@@ -52,7 +51,7 @@ if __name__ == "__main__":
     os.mkdir(INPUT_MANIFESTS_DIRECTORY)
     s3 = boto3.client("s3")
     for i, url in enumerate(input_data_json["URLS"]):
-        s3_bucket, s3_object = split_s3_path(url)
+        s3_bucket, s3_object = url.replace("s3://", "").split("/", 1)
         local_file_path = os.path.join(INPUT_MANIFESTS_DIRECTORY, f"manifest{i}.txt")
 
         logging.info(f"[out] downloading {url} to {local_file_path}")
