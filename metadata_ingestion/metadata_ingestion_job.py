@@ -63,9 +63,7 @@ def main():
 
     download_file(input_data_json["URL"], MANIFEST)
 
-    commons_host_url = input_data_json.get("host")
-    if not commons_host_url:
-        commons_host_url = "https://{}/".format(HOSTNAME)
+    commons_host_url = "http://revproxy-service/"
 
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)

@@ -46,9 +46,7 @@ if __name__ == "__main__":
 
     print("Start to download manifest ...")
 
-    common_url = input_data_json.get("host")
-    if not common_url:
-        common_url = "https://{}".format(HOSTNAME)
+    common_url = "http://revproxy-service"
 
     num_process = input_data_json.get("num_processes", 1)
     max_concurrent_requests = input_data_json.get("max_concurrent_requests", 8)
