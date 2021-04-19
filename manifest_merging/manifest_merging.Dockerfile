@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM quay.io/cdis/python:3.6
 
 RUN pip install gen3==2.5.0
 RUN pip install boto3==1.11.11
