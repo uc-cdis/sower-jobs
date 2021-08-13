@@ -1,6 +1,5 @@
-import asyncio
-from time import sleep
 import aiohttp
+import asyncio
 import json
 import os
 import shutil
@@ -12,7 +11,6 @@ from gen3.tools.download.manifest import (
 from gen3.auth import Gen3Auth
 import requests
 import boto3
-import sys
 
 from temporary_api_key import TemporaryAPIKey
 
@@ -22,6 +20,9 @@ MANIFEST_FILENAME = "manifest.json"
 EXPORT_DIR = "export"
 OUTPUT_PREFIX = "[out] "
 MAX_DOWNLOAD_SIZE = 250000000
+DEFAULT_ERROR_MESSAGE = (
+    "Unable to complete this download. Please try again later, or use the Gen3 client."
+)
 
 
 async def build_manifest_from_study_ids(hostname, token, study_ids):
@@ -61,9 +62,13 @@ async def build_manifest_from_study_ids(hostname, token, study_ids):
         else:
             manifest += study["__manifest"]
 
-    download_size = sum(file["file_size"] for file in manifest)
+    download_size = sum(file.get("file_size", 0) for file in manifest)
     if download_size > MAX_DOWNLOAD_SIZE:
-        fail(f"Download size {download_size} exceeds 250MB limit.")
+        fail(
+            f"The selected studies contain {download_size / 1000000} MB of data, "
+            "which exceeds the download limit of 250 MB. "
+            "Please deselect some studies and try again, or use the Gen3 client."
+        )
 
     with open(MANIFEST_FILENAME, "w+") as f:
         json.dump(manifest, f)
@@ -108,7 +113,7 @@ def upload_export_to_s3(s3_credentials, username):
     return url
 
 
-def fail(error_message):
+def fail(error_message=DEFAULT_ERROR_MESSAGE):
     """
     fail the job
     sower /status will show failure
@@ -125,17 +130,20 @@ if __name__ == "__main__":
     try:
         input_data = json.loads(os.environ["INPUT_DATA"])
     except Exception as e:
-        fail(f"Unable to parse input_data {repr(e)}")
+        print(f"Unable to parse input_data {repr(e)}")
+        fail()
 
     study_ids = input_data["study_ids"]
     if not study_ids:
-        fail("Missing input parameter 'study_ids'")
+        print("Missing input parameter 'study_ids'")
+        fail("No studies provided. Please select some studies and try again.")
 
     try:
         with open("/batch-export-creds.json") as creds_file:
             s3_credentials = json.load(creds_file)
     except:
-        fail("S3 is misconfigured for this job.")
+        print("S3 is misconfigured for this job.")
+        fail()
 
     try:
         username_req = requests.get(
@@ -145,7 +153,8 @@ if __name__ == "__main__":
         username_req.raise_for_status()
         username = username_req.json()["username"]
     except Exception as e:
-        fail(f"Unable to authorize user from access token -- {e}")
+        print(f"Unable to authorize user from access token -- {e}")
+        fail("Unable to authorize user.")
 
     try:
         loop = asyncio.new_event_loop()
@@ -154,17 +163,20 @@ if __name__ == "__main__":
             build_manifest_from_study_ids(hostname, access_token, study_ids)
         )
     except Exception as e:
-        fail(f"Unable to build a manifest from given study ids: {repr(e)}")
+        print(f"Unable to build a manifest from given study ids: {repr(e)}")
+        fail()
 
     try:
         download_files(access_token, hostname)
     except Exception as e:
-        fail(f"Unable to download files: {repr(e)}")
+        print(f"Unable to download files: {repr(e)}")
+        fail()
 
     try:
         presigned_url = upload_export_to_s3(s3_credentials, username)
     except Exception as e:
-        fail(f"Export to s3 failed {repr(e)}")
+        print(f"Export to s3 failed {repr(e)}")
+        fail()
 
     # success
     # sower /status will show completed
