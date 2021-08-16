@@ -3,6 +3,7 @@ import asyncio
 import json
 import os
 import shutil
+from urllib.parse import quote_plus
 from gen3.tools.download.manifest import (
     describe_access_to_files_in_workspace_manifest,
     download_files_in_workspace_manifest,
@@ -52,13 +53,10 @@ async def build_manifest_from_study_ids(hostname, token, study_ids):
             *[req.json() for req in await asyncio.gather(*ongoing_requests)]
         )
 
-    # print(f"Retrieved metadata: {study_metadata}")
     manifest = []
     for study in study_metadata:
         if not study["__manifest"]:
-            print(
-                f"Study {study['project_number']} is missing __manifest entry. Skipping."
-            )
+            print(f"Study {study} is missing __manifest entry. Skipping.")
         else:
             manifest += study["__manifest"]
 
@@ -104,7 +102,7 @@ def upload_export_to_s3(s3_credentials, username):
         aws_secret_access_key=aws_secret_access_key,
     )
 
-    export_key = f"{username}-export.zip"
+    export_key = f"{quote_plus(username)}-export.zip"
     s3_client.upload_file("export.zip", bucket_name, export_key)
 
     url = s3_client.generate_presigned_url(
