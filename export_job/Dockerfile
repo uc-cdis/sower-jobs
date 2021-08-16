@@ -11,5 +11,5 @@ WORKDIR /gen3
 
 RUN mkdir export
 
-ENTRYPOINT [ "python" ]
-CMD [ "export_zip_from_manifest_job.py" ]
+# clean up any disk space in use from the /export dir once the job is complete
+ENTRYPOINT [ "bash", "-c", "python export_zip_from_manifest_job.py; rm -rf export/" ]
