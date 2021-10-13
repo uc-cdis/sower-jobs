@@ -78,10 +78,10 @@ def download_files(access_token, hostname):
     """
     with TemporaryAPIKey(token=access_token, hostname=hostname):
         auth = Gen3Auth(refresh_file=TemporaryAPIKey.file_name)
-        # list_files_in_workspace_manifest(MANIFEST_FILENAME)
-        describe_access_to_files_in_workspace_manifest(
-            hostname, auth, MANIFEST_FILENAME
-        )
+        list_files_in_workspace_manifest(MANIFEST_FILENAME)
+        # describe_access_to_files_in_workspace_manifest(
+        #     hostname, auth, MANIFEST_FILENAME
+        # )
         download_files_in_workspace_manifest(
             hostname, auth, MANIFEST_FILENAME, EXPORT_DIR
         )
