@@ -1,4 +1,4 @@
-FROM quay.io/cdis/python:3.7-stretch
+FROM quay.io/cdis/python:3.8-buster
 
 RUN pip install git+https://github.com/uc-cdis/gen3sdk-python.git@ca58b94ebcc1377122da10b716d7a01722cfc69b
 RUN pip install boto3==1.11.11
