@@ -12,7 +12,7 @@ class TemporaryAPIKey:
 
     def __enter__(self):
         api_key_req = requests.post(
-            f"https://{self.hostname}/user/credentials/cdis",
+            f"https://{self.hostname}/user/credentials/api",
             headers={"Authorization": f"bearer {self.token}"},
         )
         api_key_req.raise_for_status()
@@ -24,6 +24,6 @@ class TemporaryAPIKey:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         requests.delete(
-            f"https://{self.hostname}/user/credentials/cdis/{self.api_key_id}",
+            f"https://{self.hostname}/user/credentials/api/{self.api_key_id}",
             headers={"Authorization": f"bearer {self.token}"},
         )
