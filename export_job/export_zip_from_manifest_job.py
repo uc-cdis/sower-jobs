@@ -5,10 +5,9 @@ import os
 import shutil
 from urllib.parse import quote_plus
 from gen3.tools.download.drs_download import (
-    # this function no longer exists in the SDK branch we are using
-    # describe_access_to_files_in_workspace_manifest,
-    download_files_in_workspace_manifest,
-    list_files_in_workspace_manifest,
+    list_access_in_drs_manifest,
+    download_files_in_drs_manifest,
+    list_files_in_drs_manifest,
 )
 from gen3.auth import Gen3Auth
 import requests
@@ -79,13 +78,9 @@ def download_files(access_token, hostname):
     """
     with TemporaryAPIKey(token=access_token, hostname=hostname):
         auth = Gen3Auth(refresh_file=TemporaryAPIKey.file_name)
-        list_files_in_workspace_manifest(hostname, auth, MANIFEST_FILENAME)
-        # describe_access_to_files_in_workspace_manifest(
-        #     hostname, auth, MANIFEST_FILENAME
-        # )
-        download_files_in_workspace_manifest(
-            hostname, auth, MANIFEST_FILENAME, EXPORT_DIR
-        )
+        list_files_in_drs_manifest(hostname, auth, MANIFEST_FILENAME)
+        list_access_in_drs_manifest(hostname, auth, MANIFEST_FILENAME)
+        download_files_in_drs_manifest(hostname, auth, MANIFEST_FILENAME, EXPORT_DIR)
         shutil.make_archive(EXPORT_DIR, "zip", EXPORT_DIR)
 
 
