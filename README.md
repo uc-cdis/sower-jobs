@@ -233,6 +233,58 @@ It contains a job for merging bucket manifests of file objects, and can be set u
 }
 ```
 
+### Export Job
+
+The export job accepts a list of discovery metadata guids and returns an S3 presigned URL pointing to a zip of the `__manifest`-referenced files of all guids.
+
+This job uses the aggregate metadata service for lookups and generates a temporary API key for downloads via the gen3 SDK.
+
+Export sizes are limited to 250 megabytes and are stored under a user-unique S3 object. Each new download replaces the previous, if there was one.
+
+```json
+{
+  "name": "batch-export",
+  "action": "batch-export",
+  "activeDeadlineSeconds": 600,
+  "container": {
+    "name": "job-task",
+    "image": "quay.io/cdis/batch-export:master",
+    "pull_policy": "Always",
+    "env": [
+      {
+        "name": "GEN3_HOSTNAME",
+        "valueFrom": {
+          "configMapKeyRef": {
+            "name": "manifest-global",
+            "key": "hostname"
+          }
+        }
+      }
+    ],
+    "volumeMounts": [
+      {
+        "name": "batch-export-creds-volume",
+        "readOnly": true,
+        "mountPath": "/batch-export-creds.json",
+        "subPath": "config.json"
+      }
+    ],
+    "cpu-limit": "1",
+    "memory-limit": "1Gi"
+  },
+  "volumes": [
+    {
+      "name": "batch-export-creds-volume",
+      "secret": {
+        "secretName": "batch-export-g3auto"
+      }
+    }
+  ],
+  "restart_policy": "Never"
+}
+```
+
+
 ### Kubernetes Secret
 
 The secret `sower-jobs-g3auto` should be setup automatically with Cloud Automation and contains a JSON blob with:
