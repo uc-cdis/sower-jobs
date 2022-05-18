@@ -14,7 +14,7 @@ jobs:
       ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}
-    env:
-      REPO_NAME: delete-expired-objects
     with:
       DOCKERFILE_LOCATION: ./objects_delete/delete_temp_objects.Dockerfile
+    env:
+      REPO_NAME: delete-expired-objects
