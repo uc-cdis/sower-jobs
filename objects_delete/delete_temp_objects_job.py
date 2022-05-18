@@ -4,7 +4,7 @@ from gen3 import object, metadata, auth
 auth = auth.Gen3Auth(refresh_file="credentials.json")
 mds_handle = metadata.Gen3Metadata(auth)
 
-print("Initiating delete_temp_objects_job")
+print("Initiating delete_temp_objects_job...")
 LIMIT_SIZE = 2
 offset_position = 0
 response_dict = mds_handle.query(
