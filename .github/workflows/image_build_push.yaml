@@ -16,3 +16,4 @@ jobs:
       QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}
     with:
       DOCKERFILE_LOCATION: ./objects_delete/delete_temp_objects.Dockerfile
+      OVERRIDE_REPO_NAME: delete-expired-objects
