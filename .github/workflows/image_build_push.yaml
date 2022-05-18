@@ -15,4 +15,4 @@ jobs:
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}
     with:
-    DOCKER_FILE_LOCATION: "./objects_delete/delete_temp_objects.Dockerfile"
+      DOCKER_FILE_LOCATION: "./objects_delete/delete_temp_objects.Dockerfile"
