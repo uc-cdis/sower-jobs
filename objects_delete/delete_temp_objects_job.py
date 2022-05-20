@@ -30,3 +30,4 @@ if type(response_dict) is dict:
             object_api.delete_object(guid=guid)
         except Exception as ex:
             print(f"Couldn't delete object with guid -- {guid}\n{ex}")
+print(f"Job completed. Deleted {len(delete_list)} objects...")
