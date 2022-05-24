@@ -1,7 +1,7 @@
 from time import time
 from gen3 import object, metadata, auth
 
-auth = auth.Gen3Auth(refresh_file="/mnt/sai-credentials.json")
+auth = auth.Gen3Auth(refresh_file="/mnt/api-profile-credentials.json")
 mds_handle = metadata.Gen3Metadata(auth)
 
 print("Initializing delete_temp_objects_job...")
