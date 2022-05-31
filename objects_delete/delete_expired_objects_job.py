@@ -5,7 +5,7 @@ auth = auth.Gen3Auth(refresh_file="/mnt/api-profile-credentials.json")
 mds_handle = metadata.Gen3Metadata(auth)
 
 print("Initializing delete_temp_objects_job...")
-LIMIT_SIZE = 2
+LIMIT_SIZE = 10
 offset_position = 0
 response_dict = mds_handle.query(
     query="date_to_delete=*", return_full_metadata=True, limit=LIMIT_SIZE
@@ -20,8 +20,7 @@ if type(response_dict) is dict:
             limit=LIMIT_SIZE,
             offset=offset_position,
         )
-        if response_dict:
-            guid_list += list(response_dict.values())
+        guid_list += list(response_dict.values())
     delete_list = [obj["guid"] for obj in guid_list if obj["date_to_delete"] < time()]
     object_api = object.Gen3Object(auth)
     for guid in delete_list:

@@ -7,7 +7,7 @@ on:
 
 jobs:
   ci:
-    name: Build Image and Push to Quay
+    name: Build and Push objects_delete Image
     uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
     secrets:
       ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
