@@ -3,7 +3,7 @@ name: Build Docker Images and Push to Quay and ECR
 on:
   push:
     paths:
-      - 'objects_delete/**'
+      - 'delete_expired_objects/**'
 
 jobs:
   ci:
@@ -15,6 +15,6 @@ jobs:
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}
     with:
-      DOCKERFILE_LOCATION: ./objects_delete/delete_temp_objects.Dockerfile
-      DOCKERFILE_BUILD_CONTEXT: ./objects_delete
+      DOCKERFILE_LOCATION: ./delete_expired_objects/delete_expired_objects.Dockerfile
+      DOCKERFILE_BUILD_CONTEXT: ./delete_expired_objects
       OVERRIDE_REPO_NAME: delete-expired-objects
