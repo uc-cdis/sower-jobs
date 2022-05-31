@@ -6,4 +6,4 @@ COPY . /gen3
 
 WORKDIR /gen3
 
-ENTRYPOINT [ "bash", "-c", "echo 'pod started'; python delete_expired_objects_job.py; echo 'pod ended'" ]
+ENTRYPOINT [ "bash", "-c", "python delete_expired_objects_job.py" ]
