@@ -3,7 +3,7 @@ import traceback
 from gen3 import object, metadata, auth
 
 """
-Note: This job requires Metadata service to be above version 1.6.5 or 2022.06
+Note: This job requires Metadata service to be above version 1.7.0 or 2022.06
 """
 auth = auth.Gen3Auth(refresh_file="/mnt/api-profile-credentials.json")
 mds_handle = metadata.Gen3Metadata(auth)
@@ -50,9 +50,8 @@ for obj in guid_list:
         delete_counter += 1
     except Exception as ex:
         exception_counter += 1
-        print(
-            f"Couldn't delete object with guid -- {obj['guid']}\n{traceback.print_exc()}"
-        )
+        print(f"Couldn't delete object with guid -- {obj['guid']}")
+        traceback.print_exc()
 
 if exception_counter:
     raise Exception(
