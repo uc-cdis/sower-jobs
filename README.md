@@ -284,6 +284,41 @@ Export sizes are limited to 250 megabytes and are stored under a user-unique S3 
 }
 ```
 
+### Delete Expired objects Job
+
+The `delete expired objects` job performs a query to fetch the current metadata objects that have a `date_to_delete` field and perform a `delete  operation` on all the objects that are expired.
+
+This job uses the aggregate metadata service for lookups and uses the `Delete` method of `/objects` endpoint of `Metadata Service` to perform the delete operation.
+
+
+```json
+{
+      "name": "delete-expired",
+      "action": "delete_expired",
+      "container": {
+        "name": "delete-job-task",
+        "image": "quay.io/cdis/delete-expired-objects:master",
+        "pull_policy": "Always",
+        "volumeMounts": [
+          {
+            "name": "profile-creds-volume",
+            "mountPath": "/mnt"
+          }
+        ],
+        "cpu-limit": "1",
+        "memory-limit": "4Gi"
+      },
+      "volumes": [
+        {
+          "name": "profile-creds-volume",
+          "secret": {
+            "secretName": "delete-expired-objects-g3auto"
+          }
+        }
+      ],
+      "restart_policy": "Never"
+    }
+```
 
 ### Kubernetes Secret
 
