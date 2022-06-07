@@ -288,7 +288,7 @@ Export sizes are limited to 250 megabytes and are stored under a user-unique S3 
 
 The `delete expired objects` job performs a query to fetch the current metadata objects that have a `date_to_delete` field and perform a `delete  operation` on all the objects that are expired.
 
-This job uses the aggregate metadata service for lookups and uses the `Delete` method of `/objects` endpoint of `Metadata Service` to perform the delete operation.
+This job uses the metadata service for lookups and uses the `Delete` method of `/objects` endpoint of `Metadata Service` to perform the delete operation.
 
 
 ```json
