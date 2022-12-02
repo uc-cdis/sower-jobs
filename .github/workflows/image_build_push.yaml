@@ -1,20 +1,71 @@
-name: Build Docker Images and Push to Quay and ECR
+name: Build Image and Push
 
-on:
-  push:
-    paths:
-      - 'delete_expired_objects/**'
+on: push
 
 jobs:
-  ci:
-    name: Build and Push delete_expired_objects Image
+  manifest-indexing:
     uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
+    with:
+      OVERRIDE_REPO_NAME: "manifest-indexing"
+      DOCKERFILE_LOCATION: "./manifest_indexing/manifest_indexing.Dockerfile"
+      DOCKERFILE_BUILD_CONTEXT: "./manifest_indexing"
     secrets:
       ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
       ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}
+  download-indexd-manifest:
+    uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
     with:
-      DOCKERFILE_LOCATION: ./delete_expired_objects/delete_expired_objects.Dockerfile
-      DOCKERFILE_BUILD_CONTEXT: ./delete_expired_objects
-      OVERRIDE_REPO_NAME: delete-expired-objects
+      OVERRIDE_REPO_NAME: "download-indexd-manifest"
+      DOCKERFILE_LOCATION: "./manifest_indexing/indexd_manifest_job.Dockerfile"
+      DOCKERFILE_BUILD_CONTEXT: "./manifest_indexing"
+    secrets:
+      ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+      ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}
+  manifest-merging:
+    uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
+    with:
+      OVERRIDE_REPO_NAME: "manifest-merging"
+      DOCKERFILE_LOCATION: "./manifest_merging/manifest_merging.Dockerfile"
+      DOCKERFILE_BUILD_CONTEXT: "./manifest_merging"
+    secrets:
+      ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+      ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}
+  metadata-manifest-ingestion:
+    uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
+    with:
+      OVERRIDE_REPO_NAME: "metadata-manifest-ingestion"
+      DOCKERFILE_LOCATION: "./metadata_ingestion/metadata_ingestion.Dockerfile"
+      DOCKERFILE_BUILD_CONTEXT: "./metadata_ingestion"
+    secrets:
+      ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+      ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}
+  get-dbgap-metadata:
+    uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
+    with:
+      OVERRIDE_REPO_NAME: "get-dbgap-metadata"
+      DOCKERFILE_LOCATION: "./metadata_ingestion/get_dbgap_metadata_manifest.Dockerfile"
+      DOCKERFILE_BUILD_CONTEXT: "./metadata_ingestion"
+    secrets:
+      ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+      ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}
+  batch-export:
+    uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
+    with:
+      OVERRIDE_REPO_NAME: "batch-export"
+      DOCKERFILE_LOCATION: "./export_job/Dockerfile"
+      DOCKERFILE_BUILD_CONTEXT: "./export_job"
+    secrets:
+      ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+      ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}
