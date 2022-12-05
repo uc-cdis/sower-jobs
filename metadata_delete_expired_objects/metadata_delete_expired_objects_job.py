@@ -15,7 +15,7 @@ from gen3 import object, metadata, auth
 
 
 def main():
-    print("Initializing delete_expired_objects_job...")
+    print("Initializing metadata_delete_expired_objects_job...")
 
     assert "CLIENT_ID" in os.environ, f"CLIENT_ID environment variable not set"
     assert "CLIENT_SECRET" in os.environ, f"CLIENT_SECRET environment variable not set"

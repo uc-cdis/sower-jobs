@@ -6,4 +6,4 @@ COPY . /gen3
 
 WORKDIR /gen3
 
-ENTRYPOINT [ "bash", "-c", "python delete_expired_objects_job.py" ]
+ENTRYPOINT [ "bash", "-c", "python metadata_delete_expired_objects_job.py" ]
