@@ -290,6 +290,15 @@ The `metadata delete expired objects` job performs a query to fetch the current 
 
 This job uses the metadata service for lookups and uses the `Delete` method of `/objects` endpoint of `Metadata Service` to perform the delete operation.
 
+This job requires providing a configuration file in a `metadata-delete-expired-objects-g3auto` secret. The path to the configuration file can be set using the environment variable `CONFIG_PATH` (default: `/mnt/config.json`).
+```
+{
+  "oidc_client_id": "",
+  "oidc_client_secret": ""
+}
+```
+
+Sower job configuration:
 ```json
 {
   "name": "metadata-delete-expired",

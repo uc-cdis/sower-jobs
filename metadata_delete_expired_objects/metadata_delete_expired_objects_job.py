@@ -7,6 +7,7 @@ in Metadata Service and Fence.
 """
 
 
+import json
 import os
 from time import time
 import traceback
@@ -17,10 +18,18 @@ from gen3 import object, metadata, auth
 def main():
     print("Initializing metadata_delete_expired_objects_job...")
 
-    assert "CLIENT_ID" in os.environ, f"CLIENT_ID environment variable not set"
-    assert "CLIENT_SECRET" in os.environ, f"CLIENT_SECRET environment variable not set"
+    config_file_path = os.environ.get("CONFIG_PATH", "/mnt/config.json")
+    if not os.oath.exists(config_file_path):
+        raise Exception(f"Configuration file not found at '{config_file_path}'")
+    with open(config_file_path, "r") as f:
+        config = json.load(f)
+    assert "oidc_client_id" in config, f"'oidc_client_id' is not set in configuration"
+    assert (
+        "oidc_client_secret" in config
+    ), f"'oidc_client_secret' is not set in configuration"
+
     _auth = auth.Gen3Auth(
-        client_credentials=(os.environ["CLIENT_ID"], os.environ["CLIENT_SECRET"])
+        client_credentials=(config["oidc_client_id"], config["oidc_client_secret"])
     )
     mds_handle = metadata.Gen3Metadata(_auth)
     object_api = object.Gen3Object(_auth)
