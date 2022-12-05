@@ -1,17 +1,29 @@
+"""
+This job requires Metadata Service >= 1.7.0 or 2022.06 and the Gen3 SDK >= 4.16.0.
+
+It also requires providing the CLIENT_ID and CLIENT_SECRET environment variables:
+credentials for an OIDC client with the "client_credentials" grant and "delete" access
+in Metadata Service and Fence.
+"""
+
+
+import os
 from time import time
 import traceback
-from gen3 import object, metadata, auth
 
-"""
-Note: This job requires Metadata service to be above version 1.7.0 or 2022.06
-"""
+from gen3 import object, metadata, auth
 
 
 def main():
-    auth = auth.Gen3Auth(refresh_file="/mnt/api-profile-credentials.json")
-    mds_handle = metadata.Gen3Metadata(auth)
-
     print("Initializing delete_expired_objects_job...")
+
+    assert "CLIENT_ID" in os.environ, f"CLIENT_ID environment variable not set"
+    assert "CLIENT_SECRET" in os.environ, f"CLIENT_SECRET environment variable not set"
+    _auth = auth.Gen3Auth(
+        client_credentials=(os.environ["CLIENT_ID"], os.environ["CLIENT_SECRET"])
+    )
+    mds_handle = metadata.Gen3Metadata(_auth)
+    object_api = object.Gen3Object(_auth)
 
     LIMIT_SIZE = 2000
     offset_position = 0
@@ -42,9 +54,8 @@ def main():
             for record in response_dict.values()
             if record["date_to_delete"] < time()
         ]
-    exception_counter, delete_counter = 0, 0
-    object_api = object.Gen3Object(auth)
 
+    exception_counter, delete_counter = 0, 0
     for obj in guid_list:
         try:
             print(f"Deleting object with guid -- {obj['guid']}")
