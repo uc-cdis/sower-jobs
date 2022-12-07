@@ -39,6 +39,7 @@ def main():
     ), f"'oidc_client_secret' is not set in configuration"
     assert "hostname" in config, f"'hostname' is not set in configuration"
 
+    # do not use `datetime.utcnow()` or the timestamp will be wrong, `timestamp()` already converts to UTC
     now = datetime.now().timestamp()
     logging.info(f"Deleting objects with an `_expires_at` timestamp earlier than {now}")
 

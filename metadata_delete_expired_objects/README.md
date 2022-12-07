@@ -23,8 +23,8 @@ The `oidc_client_id` and `oidc_client_secret` and credentials for an OIDC client
 Sower job configuration:
 ```json
 {
-  "name": "metadata-delete-expired",
-  "action": "meatdata_delete_expired",
+  "name": "metadata-delete-expired-objects",
+  "action": "meatdata_delete_expired_objects",
   "container": {
     "name": "metadata-delete-job-task",
     "image": "quay.io/cdis/metadata-delete-expired-objects:master",
