@@ -8,18 +8,24 @@ in Metadata Service and Fence.
 
 
 import json
+import logging
 import os
+import sys
 from time import time
 import traceback
 
 from gen3 import object, metadata, auth
 
 
+logging.basicConfig(filename="metadata_delete_expired_objects.log", level=logging.DEBUG)
+logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
+
+
 def main():
-    print("Initializing metadata_delete_expired_objects_job...")
+    logging.info("Initializing metadata_delete_expired_objects_job...")
 
     config_file_path = os.environ.get("CONFIG_PATH", "/mnt/config.json")
-    if not os.oath.exists(config_file_path):
+    if not os.path.exists(config_file_path):
         raise Exception(f"Configuration file not found at '{config_file_path}'")
     with open(config_file_path, "r") as f:
         config = json.load(f)
@@ -27,13 +33,16 @@ def main():
     assert (
         "oidc_client_secret" in config
     ), f"'oidc_client_secret' is not set in configuration"
+    assert "endpoint" in config, f"'endpoint' is not set in configuration"
 
     _auth = auth.Gen3Auth(
-        client_credentials=(config["oidc_client_id"], config["oidc_client_secret"])
+        endpoint=config["endpoint"],
+        client_credentials=(config["oidc_client_id"], config["oidc_client_secret"]),
     )
     mds_handle = metadata.Gen3Metadata(_auth)
     object_api = object.Gen3Object(_auth)
 
+    logging.info("Querying Metadata Service objects...")
     LIMIT_SIZE = 2000
     offset_position = 0
     response_dict = mds_handle.query(
@@ -63,23 +72,27 @@ def main():
             for record in response_dict.values()
             if record["date_to_delete"] < time()
         ]
+    logging.info(
+        f"Found {len(response_dict)} objects with an expiration, of which {len(guid_list)} are expired"
+    )
 
+    logging.info("Deleting expired objects...")
     exception_counter, delete_counter = 0, 0
     for obj in guid_list:
         try:
-            print(f"Deleting object with guid -- {obj['guid']}")
+            logging.info(f"Deleting object with guid -- {obj['guid']}")
             object_api.delete_object(guid=obj["guid"], delete_file_locations=True)
             delete_counter += 1
         except Exception as ex:
             exception_counter += 1
-            print(f"Couldn't delete object with guid -- {obj['guid']}")
+            logging.error(f"Couldn't delete object with guid -- {obj['guid']}")
             traceback.print_exc()
 
     if exception_counter:
         raise Exception(
             f"Job Failed. Couldn't delete {exception_counter} objects. Check above logs for more info..."
         )
-    print(f"Job completed. Deleted {delete_counter} objects...")
+    logging.info(f"Job completed. Deleted {delete_counter} objects")
 
 
 if __name__ == "__main__":
