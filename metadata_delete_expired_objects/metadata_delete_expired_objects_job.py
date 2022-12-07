@@ -3,11 +3,11 @@ See this repo's README file for details.
 """
 
 
+from datetime import datetime
 import json
 import logging
 import os
 import sys
-from time import time
 import traceback
 
 from gen3 import object, metadata, auth
@@ -31,6 +31,9 @@ def main():
     ), f"'oidc_client_secret' is not set in configuration"
     assert "endpoint" in config, f"'endpoint' is not set in configuration"
 
+    now = datetime.utcnow().timestamp()
+    logging.info(f"Deleting objects with an `_expires_at` timestamp earlier than {now}")
+
     _auth = auth.Gen3Auth(
         endpoint=config["endpoint"],
         client_credentials=(config["oidc_client_id"], config["oidc_client_secret"]),
@@ -42,23 +45,24 @@ def main():
     LIMIT_SIZE = 2000
     offset_position = 0
     response_dict = mds_handle.query(
-        query="date_to_delete=*", return_full_metadata=True, limit=LIMIT_SIZE
+        query="_expires_at=*", return_full_metadata=True, limit=LIMIT_SIZE
     )
 
     if type(response_dict) is not dict:
         raise Exception(
             f"Job Failed. Expected a dict but got a {type(response_dict)}: {response_dict}"
         )
+    print(response_dict)
 
     guid_list = [
         record["guid"]
         for record in response_dict.values()
-        if record["date_to_delete"] < time()
+        if record["_expires_at"] < now
     ]
     while len(response_dict) == LIMIT_SIZE:
         offset_position += LIMIT_SIZE
         response_dict = mds_handle.query(
-            query="date_to_delete=*",
+            query="_expires_at=*",
             return_full_metadata=True,
             limit=LIMIT_SIZE,
             offset=offset_position,
@@ -66,7 +70,7 @@ def main():
         guid_list += [
             record["guid"]
             for record in response_dict.values()
-            if record["date_to_delete"] < time()
+            if record["_expires_at"] < now
         ]
     logging.info(
         f"Found {len(response_dict)} objects with an expiration, of which {len(guid_list)} are expired"
