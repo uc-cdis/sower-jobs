@@ -39,7 +39,7 @@ def main():
     ), f"'oidc_client_secret' is not set in configuration"
     assert "hostname" in config, f"'hostname' is not set in configuration"
 
-    now = datetime.utcnow().timestamp()
+    now = datetime.now().timestamp()
     logging.info(f"Deleting objects with an `_expires_at` timestamp earlier than {now}")
 
     _auth = auth.Gen3Auth(
