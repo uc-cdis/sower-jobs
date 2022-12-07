@@ -1,18 +1,18 @@
 # Metadata Delete Expired Objects Job
 
-The `metadata delete expired objects` job performs a query to fetch the current metadata objects that have a `date_to_delete` field and performs a `delete operation` on all the objects that are expired.
+The `metadata delete expired objects` job performs a query to fetch the current metadata objects that have an `_expires_at` field and performs a `delete operation` on all the objects that are expired. The `_expires_at` value is expected to be a timestamp.
 
 This job requires:
 - Metadata Service >= 1.7.0 or 2022.06
 - Arborist => 4.0.0 or 2022.12
 - Fence => 6.1.0 or 2022.10
 - Gen3 SDK >= 4.16.0
-- Pelican export >= ? (TODO add `date_to_delete` logic)
+- Pelican export >= ? (TODO add `_expires_at` logic)
 
 This job requires providing a configuration file in a `metadata-delete-expired-objects-g3auto` secret. The path to the configuration file can be set using the environment variable `CONFIG_PATH` (default: `/mnt/config.json`).
 ```
 {
-  "endpoint": "https://my-commons.org",
+  "hostname": "https://my-commons.org",
   "oidc_client_id": "",
   "oidc_client_secret": ""
 }
