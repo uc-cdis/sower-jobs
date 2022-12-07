@@ -293,6 +293,7 @@ This job uses the metadata service for lookups and uses the `Delete` method of `
 This job requires providing a configuration file in a `metadata-delete-expired-objects-g3auto` secret. The path to the configuration file can be set using the environment variable `CONFIG_PATH` (default: `/mnt/config.json`).
 ```
 {
+  "endpoint": "https://my-commons.org",
   "oidc_client_id": "",
   "oidc_client_secret": ""
 }
