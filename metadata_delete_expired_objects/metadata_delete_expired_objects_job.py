@@ -1,9 +1,5 @@
 """
-This job requires Metadata Service >= 1.7.0 or 2022.06 and the Gen3 SDK >= 4.16.0.
-
-It also requires providing the CLIENT_ID and CLIENT_SECRET environment variables:
-credentials for an OIDC client with the "client_credentials" grant and "delete" access
-in Metadata Service and Fence.
+See this repo's README file for details.
 """
 
 

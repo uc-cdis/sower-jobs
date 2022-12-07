@@ -286,50 +286,7 @@ Export sizes are limited to 250 megabytes and are stored under a user-unique S3 
 
 ### Metadata Delete Expired Objects Job
 
-The `metadata delete expired objects` job performs a query to fetch the current metadata objects that have a `date_to_delete` field and performs a `delete operation` on all the objects that are expired.
-
-This job uses the metadata service for lookups and uses the `Delete` method of `/objects` endpoint of `Metadata Service` to perform the delete operation.
-
-This job requires providing a configuration file in a `metadata-delete-expired-objects-g3auto` secret. The path to the configuration file can be set using the environment variable `CONFIG_PATH` (default: `/mnt/config.json`).
-```
-{
-  "endpoint": "https://my-commons.org",
-  "oidc_client_id": "",
-  "oidc_client_secret": ""
-}
-```
-
-Sower job configuration:
-```json
-{
-  "name": "metadata-delete-expired",
-  "action": "meatdata_delete_expired",
-  "container": {
-    "name": "metadata-delete-job-task",
-    "image": "quay.io/cdis/metadata-delete-expired-objects:master",
-    "pull_policy": "Always",
-    "volumeMounts": [
-      {
-        "name": "config-volume",
-        "mountPath": "/mnt"
-      }
-    ],
-    "cpu-limit": "1",
-    "memory-limit": "4Gi"
-  },
-  "volumes": [
-    {
-      "name": "config-volume",
-      "secret": {
-        "secretName": "metadata-delete-expired-objects-g3auto"
-      }
-    }
-  ],
-  "restart_policy": "Never"
-}
-```
-
-Note: For cloud-automation users, this job can also be set up as a cronjob by running `gen3 kube-setup-metadata-delete-expired-objects-job`.
+See [here](/metadata_delete_expired_objects/README.md).
 
 ### Kubernetes Secret
 
