@@ -284,6 +284,9 @@ Export sizes are limited to 250 megabytes and are stored under a user-unique S3 
 }
 ```
 
+### Metadata Delete Expired Objects Job
+
+See [here](/metadata_delete_expired_objects/README.md).
 
 ### Kubernetes Secret
 
