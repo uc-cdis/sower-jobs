@@ -55,10 +55,12 @@ async def build_manifest_from_study_ids(hostname, token, study_ids):
 
     manifest = []
     for study in study_metadata:
-        if not study["__manifest"]:
-            print(f"Study {study} is missing __manifest entry. Skipping.")
+        if not study["gen3_discovery"]["__manifest"]:
+            print(
+                f"Study {study} is missing __manifest entry in gen3_discovery. Skipping."
+            )
         else:
-            manifest += study["__manifest"]
+            manifest += study["gen3_discovery"]["__manifest"]
 
     download_size = sum(file.get("file_size", 0) for file in manifest)
     if download_size > MAX_DOWNLOAD_SIZE:
