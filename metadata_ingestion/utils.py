@@ -83,7 +83,8 @@ def upload_file(
             config=config
         )
     else:
-        s3_client = boto3.client("s3")
+        config = Config(signature_version='s3v4')
+        s3_client = boto3.client("s3", config=config)
 
     try:
         msg = f"upload_file {file_name} in {bucket}, object: {object_name}"
