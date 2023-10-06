@@ -59,7 +59,7 @@ def upload_file(
     object_name=None,
     aws_access_key_id=None,
     aws_secret_access_key=None,
-    config=Config(signature_version='s3v4')
+    config=Config(signature_version='s3v4'),
 ):
     """Upload a file to an S3 bucket
 
@@ -101,6 +101,7 @@ def create_presigned_url(
     aws_access_key_id=None,
     aws_secret_access_key=None,
     expiration=3600,
+    config=Config(signature_version='s3v4'),
 ):
     """Generate a presigned URL to share an S3 object
 
