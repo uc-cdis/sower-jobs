@@ -6,6 +6,7 @@ import string
 import logging
 import boto3
 from botocore.exceptions import ClientError
+from botocore.config import Config
 
 
 def download_file(url, filename):
@@ -74,10 +75,12 @@ def upload_file(
 
     # Upload the file
     if aws_access_key_id and aws_secret_access_key:
+        config = Config(signature_version='s3v4')
         s3_client = boto3.client(
             "s3",
             aws_access_key_id=aws_access_key_id,
             aws_secret_access_key=aws_secret_access_key,
+            config=config
         )
     else:
         s3_client = boto3.client("s3")
