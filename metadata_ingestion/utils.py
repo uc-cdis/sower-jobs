@@ -59,6 +59,7 @@ def upload_file(
     object_name=None,
     aws_access_key_id=None,
     aws_secret_access_key=None,
+    config=Config(signature_version='s3v4')
 ):
     """Upload a file to an S3 bucket
 
@@ -75,7 +76,6 @@ def upload_file(
 
     # Upload the file
     if aws_access_key_id and aws_secret_access_key:
-        config = Config(signature_version='s3v4')
         s3_client = boto3.client(
             "s3",
             aws_access_key_id=aws_access_key_id,
@@ -83,7 +83,6 @@ def upload_file(
             config=config
         )
     else:
-        config = Config(signature_version='s3v4')
         s3_client = boto3.client("s3", config=config)
 
     try:
@@ -118,9 +117,10 @@ def create_presigned_url(
             "s3",
             aws_access_key_id=aws_access_key_id,
             aws_secret_access_key=aws_secret_access_key,
+            config=config
         )
     else:
-        s3_client = boto3.client("s3")
+        s3_client = boto3.client("s3", config=config)
 
     try:
         msg = (
