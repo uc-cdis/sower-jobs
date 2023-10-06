@@ -6,6 +6,7 @@ import string
 import logging
 import boto3
 from botocore.exceptions import ClientError
+from botocore.config import Config
 
 
 def randomString(stringLength=10):
@@ -65,6 +66,7 @@ def upload_file(
     object_name=None,
     aws_access_key_id=None,
     aws_secret_access_key=None,
+    config=Config(signature_version='s3v4'),
 ):
     """Upload a file to an S3 bucket
 
@@ -85,9 +87,10 @@ def upload_file(
             "s3",
             aws_access_key_id=aws_access_key_id,
             aws_secret_access_key=aws_secret_access_key,
+            config=config
         )
     else:
-        s3_client = boto3.client("s3")
+        s3_client = boto3.client("s3", config=config)
 
     try:
         msg = f"upload_file {file_name} in {bucket}, object: {object_name}"
@@ -105,6 +108,7 @@ def create_presigned_url(
     aws_access_key_id=None,
     aws_secret_access_key=None,
     expiration=3600,
+    config=Config(signature_version='s3v4'),
 ):
     """Generate a presigned URL to share an S3 object
 
@@ -121,9 +125,10 @@ def create_presigned_url(
             "s3",
             aws_access_key_id=aws_access_key_id,
             aws_secret_access_key=aws_secret_access_key,
+            config=config
         )
     else:
-        s3_client = boto3.client("s3")
+        s3_client = boto3.client("s3", config=config)
 
     try:
         msg = (
