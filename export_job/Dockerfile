@@ -1,6 +1,6 @@
 FROM quay.io/cdis/python:3.8-buster
 
-RUN pip install git+https://github.com/uc-cdis/gen3sdk-python/fix/batch-export
+RUN pip install git+https://github.com/uc-cdis/gen3sdk-python.git@fix/batch-export
 RUN pip install boto3==1.11.11
 RUN pip install cdiserrors
 
