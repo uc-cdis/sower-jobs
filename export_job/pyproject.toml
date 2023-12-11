@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "export-job"
+version = "4.1.0"
+description = ""
+authors = ["Mingfei Shao <mshao1@uchicago.edu>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+gen3 = "4.21.0"
+boto3 = "1.11.11"
+pyyaml = "5.3.1"
+cdiserrors = "^1.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
