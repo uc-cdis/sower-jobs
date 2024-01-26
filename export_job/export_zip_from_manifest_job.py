@@ -12,6 +12,7 @@ from gen3.tools.download.drs_download import (
 from gen3.auth import Gen3Auth
 import requests
 import boto3
+from botocore.config import Config
 
 from temporary_api_key import TemporaryAPIKey
 
@@ -93,11 +94,13 @@ def upload_export_to_s3(s3_credentials, username):
     bucket_name = s3_credentials["bucket_name"]
     aws_access_key_id = s3_credentials["aws_access_key_id"]
     aws_secret_access_key = s3_credentials["aws_secret_access_key"]
+    config = Config(signature_version='s3v4')
 
     s3_client = boto3.client(
         "s3",
         aws_access_key_id=aws_access_key_id,
         aws_secret_access_key=aws_secret_access_key,
+        config=config
     )
 
     export_key = f"{quote_plus(username)}-export.zip"
