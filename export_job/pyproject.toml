@@ -7,7 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-gen3 = { git = "https://github.com/uc-cdis/gen3sdk-python.git", branch = "fix/drs-pull-manifest-validation" }
+gen3 = "4.22.4"
 boto3 = "^1.0.0"
 cdiserrors = "^1.0.0"
 urllib3 = "<=2.1.0"
