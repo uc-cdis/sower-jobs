@@ -136,8 +136,8 @@ if __name__ == "__main__":
         print(f"Unable to parse input_data {repr(e)}")
         fail()
 
-    study_ids = input_data["study_ids"]
-    file_manifest = input_data["file_manifest"]
+    study_ids = input_data.get("study_ids", None)
+    file_manifest = input_data.get("file_manifest", None)
     if not study_ids and not file_manifest:
         print("Both input parameter 'study_ids' and 'file_manifest' are missing")
         fail(
