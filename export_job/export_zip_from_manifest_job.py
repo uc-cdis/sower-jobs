@@ -26,34 +26,39 @@ DEFAULT_ERROR_MESSAGE = (
 )
 
 
-async def build_manifest_from_study_ids(hostname, token, study_ids):
+async def build_manifest_from_study_ids(hostname, token, study_ids, file_manifest):
     """
     build a manifest from a list of metadata guids representing study ids
+    if supplied with a file manifest, incorporate it in the final manifest file
     dumps result to gen3-sdk compatible manifest file
     """
     ongoing_requests = []
     study_metadata = []
-
-    print(f"Assembling manifest for study ids: {study_ids}")
-
-    async with aiohttp.ClientSession() as client:
-        for study_id in study_ids:
-            ongoing_requests += [
-                client.get(
-                    f"https://{hostname}/mds/aggregate/metadata/guid/{study_id}",
-                    headers={"Authorization": f"bearer {token}"},
-                )
-            ]
-            if len(ongoing_requests) == CHUNK_SIZE:
-                study_metadata += await asyncio.gather(
-                    *[req.json() for req in await asyncio.gather(*ongoing_requests)]
-                )
-
-        study_metadata += await asyncio.gather(
-            *[req.json() for req in await asyncio.gather(*ongoing_requests)]
-        )
-
     manifest = []
+    if file_manifest:
+        print("Got file manifest from input")
+        print(json.dumps(file_manifest, indent=2))
+        manifest = file_manifest
+
+    if study_ids:
+        print(f"Assembling manifest for study ids: {study_ids}")
+        async with aiohttp.ClientSession() as client:
+            for study_id in study_ids:
+                ongoing_requests += [
+                    client.get(
+                        f"https://{hostname}/mds/aggregate/metadata/guid/{study_id}",
+                        headers={"Authorization": f"bearer {token}"},
+                    )
+                ]
+                if len(ongoing_requests) == CHUNK_SIZE:
+                    study_metadata += await asyncio.gather(
+                        *[req.json() for req in await asyncio.gather(*ongoing_requests)]
+                    )
+
+            study_metadata += await asyncio.gather(
+                *[req.json() for req in await asyncio.gather(*ongoing_requests)]
+            )
+
     for study in study_metadata:
         if not study["gen3_discovery"]["__manifest"]:
             print(
@@ -62,6 +67,8 @@ async def build_manifest_from_study_ids(hostname, token, study_ids):
         else:
             manifest += study["gen3_discovery"]["__manifest"]
 
+    print("Assembled manifest for download")
+    print(json.dumps(manifest, indent=2))
     download_size = sum(file.get("file_size", 0) for file in manifest)
     if download_size > MAX_DOWNLOAD_SIZE:
         fail(
@@ -129,10 +136,13 @@ if __name__ == "__main__":
         print(f"Unable to parse input_data {repr(e)}")
         fail()
 
-    study_ids = input_data["study_ids"]
-    if not study_ids:
-        print("Missing input parameter 'study_ids'")
-        fail("No studies provided. Please select some studies and try again.")
+    study_ids = input_data.get("study_ids", None)
+    file_manifest = input_data.get("file_manifest", None)
+    if not study_ids and not file_manifest:
+        print("Both input parameter 'study_ids' and 'file_manifest' are missing")
+        fail(
+            "No studies or files provided. Please select some studies or files and try again."
+        )
 
     try:
         with open("/batch-export-creds.json") as creds_file:
@@ -156,7 +166,9 @@ if __name__ == "__main__":
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop.run_until_complete(
-            build_manifest_from_study_ids(hostname, access_token, study_ids)
+            build_manifest_from_study_ids(
+                hostname, access_token, study_ids, file_manifest
+            )
         )
     except Exception as e:
         print(f"Unable to build a manifest from given study ids: {repr(e)}")
