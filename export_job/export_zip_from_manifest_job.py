@@ -93,19 +93,12 @@ def download_files(access_token, hostname):
         shutil.make_archive(EXPORT_DIR, "zip", EXPORT_DIR)
 
 
-def upload_export_to_s3(s3_credentials, username):
+def upload_export_to_s3(bucket_name, username):
     """
-    uploads the local zip export to s3 and returns a presigned url, expires after 1 hour
+    Uploads the local zip export to S3 and returns a presigned URL, expires after 1 hour.
     """
-    bucket_name = s3_credentials["bucket_name"]
-    aws_access_key_id = s3_credentials["aws_access_key_id"]
-    aws_secret_access_key = s3_credentials["aws_secret_access_key"]
 
-    s3_client = boto3.client(
-        "s3",
-        aws_access_key_id=aws_access_key_id,
-        aws_secret_access_key=aws_secret_access_key,
-    )
+    s3_client = boto3.client("s3")
 
     export_key = f"{quote_plus(username)}-export.zip"
     s3_client.upload_file("export.zip", bucket_name, export_key)
@@ -113,6 +106,7 @@ def upload_export_to_s3(s3_credentials, username):
     url = s3_client.generate_presigned_url(
         "get_object", Params={"Bucket": bucket_name, "Key": export_key}, ExpiresIn=3600
     )
+
     return url
 
 
@@ -143,13 +137,7 @@ if __name__ == "__main__":
         fail(
             "No studies or files provided. Please select some studies or files and try again."
         )
-
-    try:
-        with open("/batch-export-creds.json") as creds_file:
-            s3_credentials = json.load(creds_file)
-    except:
-        print("S3 is misconfigured for this job.")
-        fail()
+        bucket_name = os.getenv("bucket_name")
 
     try:
         username_req = requests.get(
@@ -181,7 +169,7 @@ if __name__ == "__main__":
         fail()
 
     try:
-        presigned_url = upload_export_to_s3(s3_credentials, username)
+        presigned_url = upload_export_to_s3(bucket_name, username)
     except Exception as e:
         print(f"Export to s3 failed {repr(e)}")
         fail()
