@@ -123,6 +123,7 @@ def fail(error_message=DEFAULT_ERROR_MESSAGE):
 if __name__ == "__main__":
     access_token = os.environ["ACCESS_TOKEN"]
     hostname = os.environ["GEN3_HOSTNAME"]
+    bucket_name = os.environ["BUCKET"]
 
     try:
         input_data = json.loads(os.environ["INPUT_DATA"])
@@ -137,7 +138,6 @@ if __name__ == "__main__":
         fail(
             "No studies or files provided. Please select some studies or files and try again."
         )
-        bucket_name = os.getenv("bucket_name")
 
     try:
         username_req = requests.get(
