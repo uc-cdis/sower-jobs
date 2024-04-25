@@ -97,8 +97,6 @@ def upload_export_to_s3(bucket_name, username):
     """
     Uploads the local zip export to S3 and returns a presigned URL, expires after 1 hour.
     """
-    print("Printing Bucket Name 2 in upload export to s3")
-    print(bucket_name)
 
     s3_client = boto3.client("s3")
 
@@ -126,7 +124,7 @@ if __name__ == "__main__":
     access_token = os.environ["ACCESS_TOKEN"]
     hostname = os.environ["GEN3_HOSTNAME"]
     bucket_name = os.environ["BUCKET"]
-    print("Printing Bucket Name 1")
+    print("Printing Bucket Name")
     print(bucket_name)
 
     try:
