@@ -123,10 +123,11 @@ def fail(error_message=DEFAULT_ERROR_MESSAGE):
 if __name__ == "__main__":
     access_token = os.environ["ACCESS_TOKEN"]
     hostname = os.environ["GEN3_HOSTNAME"]
-    bucket_name = os.environ["BUCKET"]
-    print("Printing Bucket Name")
-    print(bucket_name)
-
+    try:
+        bucket_name = os.environ["BUCKET"]
+    except Exception as e:
+        print(f"Error: Environment variable 'BUCKET' is not set.")
+        fail()
     try:
         input_data = json.loads(os.environ["INPUT_DATA"])
     except Exception as e:
