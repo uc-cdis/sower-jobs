@@ -1,4 +1,0 @@
-test-portal-indexingPageTest:
-  - '**/*'
-test-apis-metadataIngestionTest:
-  - '**/*'
