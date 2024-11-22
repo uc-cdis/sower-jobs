@@ -68,9 +68,11 @@ def main():
 
     os.system(
         f"python ./dbgap-extract/dbgap_extract.py --study_accession_list "
-        f"{input_data_json['phsid_list']} --output_filename metadata_manifest.tsv "
+        f"{input_data_json['phsid_list']} --output_filename raw_metadata_manifest.tsv "
         "--expand_sra_details"
     )
+
+    remove_deleted_samples("raw_metadata_manifest.tsv", "metadata_manifest.tsv")
 
     if "." in input_data_json["indexing_manifest_url"]:
         indexing_file_ext = input_data_json["indexing_manifest_url"].split(".")[-1]
@@ -126,6 +128,22 @@ def main():
     )
 
     print("[out] {} {}".format(log_file_presigned_url, output_manifest_presigned_url))
+
+
+def remove_deleted_samples(dbgap_samples_file, output_file):
+    manifest = {}
+    with open(output_file, "w+", encoding="utf-8") as outputfile:
+        with open(dbgap_samples_file, "rt", encoding="utf-8-sig") as inputfile:
+            headers_row = next(inputfile)
+            outputfile.write(headers_row)
+
+            headers = headers_row.strip().split("\t")
+            for row in inputfile:
+                row_dict = dict(zip(headers, row.strip().split("\t")))
+                if row_dict.get("dbgap_status", "").strip().lower() != "deleted":
+                    outputfile.write(row)
+
+    logging.info("Done removing 'Deleted' samples from dbGaP metadata.")
 
 
 if __name__ == "__main__":
