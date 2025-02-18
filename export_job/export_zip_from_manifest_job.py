@@ -12,6 +12,7 @@ from gen3.tools.download.drs_download import (
 from gen3.auth import Gen3Auth
 import requests
 import boto3
+from botocore.config import Config
 
 from temporary_api_key import TemporaryAPIKey
 
@@ -98,7 +99,7 @@ def upload_export_to_s3(bucket_name, username):
     Uploads the local zip export to S3 and returns a presigned URL, expires after 1 hour.
     """
 
-    s3_client = boto3.client("s3")
+    s3_client = boto3.client("s3", config=Config(signature_version='s3v4'))
 
     export_key = f"{quote_plus(username)}-export.zip"
     s3_client.upload_file("export.zip", bucket_name, export_key)
@@ -126,7 +127,7 @@ if __name__ == "__main__":
     try:
         bucket_name = os.environ["BUCKET"]
     except Exception as e:
-        print(f"Error: Environment variable 'BUCKET' is not set.")
+        print("Error: Environment variable 'BUCKET' is not set.")
         fail()
     try:
         input_data = json.loads(os.environ["INPUT_DATA"])
