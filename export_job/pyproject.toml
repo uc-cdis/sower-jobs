@@ -1,13 +1,13 @@
 [tool.poetry]
 name = "export-job"
-version = "4.1.0"
+version = "5.0.2"
 description = ""
 authors = ["Mingfei Shao <mshao1@uchicago.edu>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-gen3 = "4.22.4"
+gen3 = "^4.27.1"
 boto3 = "^1.0.0"
 cdiserrors = "^1.0.0"
 urllib3 = "<=2.2.2"
