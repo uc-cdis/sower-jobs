@@ -477,18 +477,19 @@ files = [
 
 [[package]]
 name = "drsclient"
-version = "0.2.3"
+version = "0.3.0"
 description = "GA4GH DRS Client"
 optional = false
-python-versions = ">=3.9,<4.0"
+python-versions = "<4.0,>=3.9"
 files = [
-    {file = "drsclient-0.2.3.tar.gz", hash = "sha256:679061eacfb04f7fdccf709924f03b907af024481eb4c9ff123d87080cf4f344"},
+    {file = "drsclient-0.3.0-py3-none-any.whl", hash = "sha256:076d0c68afdfb229472e4de2867b7b773f279e968f1d6e45391d01c5fb6d28f1"},
+    {file = "drsclient-0.3.0.tar.gz", hash = "sha256:bf1e53ad1e651cfd206f33bf1455eb12c505970ed81dea02c32c9e40a26d83a0"},
 ]
 
 [package.dependencies]
 asyncio = ">=3.4.3,<4.0.0"
 backoff = ">=1.10.0,<2.0.0"
-httpx = ">=0.23.0,<0.24.0"
+httpx = ">=0.27.0,<0.28.0"
 requests = ">=2.23.0,<3.0.0"
 
 [[package]]
@@ -639,13 +640,13 @@ files = [
 
 [[package]]
 name = "gen3"
-version = "4.22.4"
+version = "4.27.1"
 description = "Gen3 CLI and Python SDK"
 optional = false
-python-versions = ">=3.9,<4"
+python-versions = "<4,>=3.9"
 files = [
-    {file = "gen3-4.22.4-py3-none-any.whl", hash = "sha256:bc873bda53ad5f37fbe09bdeb8db5e000154cba752990c249046e730654824c5"},
-    {file = "gen3-4.22.4.tar.gz", hash = "sha256:704f4152d132594b5bad219768b4a47936a243d950d59cbb5b3c1a5ad6655dd4"},
+    {file = "gen3-4.27.1-py3-none-any.whl", hash = "sha256:eb60aa4f263e483be0d36d2d2b86806338f7cab7de2166497e0c4916cae29862"},
+    {file = "gen3-4.27.1.tar.gz", hash = "sha256:db53603c8996059f7425e64eaae397ab0758edc1a48b6e697e8a2d73c00d82da"},
 ]
 
 [package.dependencies]
@@ -655,14 +656,14 @@ backoff = "*"
 cdislogging = ">=1.1.0,<2.0.0"
 click = "*"
 dataclasses-json = "<=0.5.9"
-drsclient = ">=0.2.2,<0.3.0"
+drsclient = ">=0.3.0"
 gen3users = "*"
 httpx = "*"
 humanfriendly = "*"
-indexclient = "*"
+indexclient = ">=2.3.0,<3.0.0"
 jsonschema = "*"
 pandas = ">=1.4.2"
-pypfb = ">=0.5.27"
+pypfb = ">=0.5.30"
 python-dateutil = "*"
 pyyaml = ">=6.0.1"
 requests = "*"
@@ -707,58 +708,60 @@ requests = "*"
 
 [[package]]
 name = "h11"
-version = "0.14.0"
+version = "0.16.0"
 description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "h11-0.14.0-py3-none-any.whl", hash = "sha256:e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761"},
-    {file = "h11-0.14.0.tar.gz", hash = "sha256:8f19fbbe99e72420ff35c00b27a34cb9937e902a8b810e2c88300c6f0a3b699d"},
+    {file = "h11-0.16.0-py3-none-any.whl", hash = "sha256:63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86"},
+    {file = "h11-0.16.0.tar.gz", hash = "sha256:4e35b956cf45792e4caa5885e69fba00bdbc6ffafbfa020300e549b208ee5ff1"},
 ]
 
 [[package]]
 name = "httpcore"
-version = "0.16.3"
+version = "1.0.9"
 description = "A minimal low-level HTTP client."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "httpcore-0.16.3-py3-none-any.whl", hash = "sha256:da1fb708784a938aa084bde4feb8317056c55037247c787bd7e19eb2c2949dc0"},
-    {file = "httpcore-0.16.3.tar.gz", hash = "sha256:c5d6f04e2fc530f39e0c077e6a30caa53f1451096120f1f38b954afd0b17c0cb"},
+    {file = "httpcore-1.0.9-py3-none-any.whl", hash = "sha256:2d400746a40668fc9dec9810239072b40b4484b640a8c38fd654a024c7a1bf55"},
+    {file = "httpcore-1.0.9.tar.gz", hash = "sha256:6e34463af53fd2ab5d807f399a9b45ea31c3dfa2276f15a2c3f00afff6e176e8"},
 ]
 
 [package.dependencies]
-anyio = ">=3.0,<5.0"
 certifi = "*"
-h11 = ">=0.13,<0.15"
-sniffio = "==1.*"
+h11 = ">=0.16"
 
 [package.extras]
+asyncio = ["anyio (>=4.0,<5.0)"]
 http2 = ["h2 (>=3,<5)"]
 socks = ["socksio (==1.*)"]
+trio = ["trio (>=0.22.0,<1.0)"]
 
 [[package]]
 name = "httpx"
-version = "0.23.3"
+version = "0.27.2"
 description = "The next generation HTTP client."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "httpx-0.23.3-py3-none-any.whl", hash = "sha256:a211fcce9b1254ea24f0cd6af9869b3d29aba40154e947d2a07bb499b3e310d6"},
-    {file = "httpx-0.23.3.tar.gz", hash = "sha256:9818458eb565bb54898ccb9b8b251a28785dd4a55afbc23d0eb410754fe7d0f9"},
+    {file = "httpx-0.27.2-py3-none-any.whl", hash = "sha256:7bb2708e112d8fdd7829cd4243970f0c223274051cb35ee80c03301ee29a3df0"},
+    {file = "httpx-0.27.2.tar.gz", hash = "sha256:f7c2be1d2f3c3c3160d441802406b206c2b76f5947b11115e6df10c6c65e66c2"},
 ]
 
 [package.dependencies]
+anyio = "*"
 certifi = "*"
-httpcore = ">=0.15.0,<0.17.0"
-rfc3986 = {version = ">=1.3,<2", extras = ["idna2008"]}
+httpcore = "==1.*"
+idna = "*"
 sniffio = "*"
 
 [package.extras]
 brotli = ["brotli", "brotlicffi"]
-cli = ["click (==8.*)", "pygments (==2.*)", "rich (>=10,<13)"]
+cli = ["click (==8.*)", "pygments (==2.*)", "rich (>=10,<14)"]
 http2 = ["h2 (>=3,<5)"]
 socks = ["socksio (==1.*)"]
+zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "humanfriendly"
@@ -1143,13 +1146,13 @@ xml = ["lxml (>=4.9.2)"]
 
 [[package]]
 name = "pypfb"
-version = "0.5.29"
+version = "0.5.30"
 description = "Python SDK for PFB format"
 optional = false
-python-versions = ">=3.9,<4"
+python-versions = "<4,>=3.9"
 files = [
-    {file = "pypfb-0.5.29-py3-none-any.whl", hash = "sha256:3b024225c45ad8a644c720d982e6d191f45df1583938d566b874288f59661eaf"},
-    {file = "pypfb-0.5.29.tar.gz", hash = "sha256:8a89235b31d5945f1fbd0efad185d3f9c3ebd7369b13ddf7d00d6c11860268ac"},
+    {file = "pypfb-0.5.30-py3-none-any.whl", hash = "sha256:0a9c45b927e446fe4ffda59aeba0391af7bfe21b21def9960cf382efb0f79a0d"},
+    {file = "pypfb-0.5.30.tar.gz", hash = "sha256:7bcb16444898246bf445b5efad5c672af8d23a7a5dcfeeaca1ac13c40d502175"},
 ]
 
 [package.dependencies]
@@ -1160,7 +1163,7 @@ fastavro = ">=1.8.2,<1.9.0"
 gen3 = ">=4.11.3,<5.0.0"
 gen3dictionary = ">=2.0.3"
 importlib_metadata = {version = ">=3.6.0", markers = "python_full_version <= \"3.9.0\""}
-python-json-logger = ">=0.1.11,<0.2.0"
+python-json-logger = ">=2.0.0"
 PyYAML = ">=6.0.1,<7.0.0"
 
 [[package]]
@@ -1231,13 +1234,20 @@ six = ">=1.5"
 
 [[package]]
 name = "python-json-logger"
-version = "0.1.11"
-description = "A python library adding a json log formatter"
+version = "3.3.0"
+description = "JSON Log Formatter for the Python Logging Package"
 optional = false
-python-versions = ">=2.7"
+python-versions = ">=3.8"
 files = [
-    {file = "python-json-logger-0.1.11.tar.gz", hash = "sha256:b7a31162f2a01965a5efb94453ce69230ed208468b0bbc7fdfc56e6d8df2e281"},
+    {file = "python_json_logger-3.3.0-py3-none-any.whl", hash = "sha256:dd980fae8cffb24c13caf6e158d3d61c0d6d22342f932cb6e9deedab3d35eec7"},
+    {file = "python_json_logger-3.3.0.tar.gz", hash = "sha256:12b7e74b17775e7d565129296105bbe3910842d9d0eb083fc83a6a617aa8df84"},
 ]
+
+[package.dependencies]
+typing_extensions = {version = "*", markers = "python_version < \"3.10\""}
+
+[package.extras]
+dev = ["backports.zoneinfo", "black", "build", "freezegun", "mdx_truly_sane_lists", "mike", "mkdocs", "mkdocs-awesome-pages-plugin", "mkdocs-gen-files", "mkdocs-literate-nav", "mkdocs-material (>=8.5)", "mkdocstrings[python]", "msgspec", "mypy", "orjson", "pylint", "pytest", "tzdata", "validate-pyproject[all]"]
 
 [[package]]
 name = "pytz"
@@ -1275,6 +1285,7 @@ files = [
     {file = "PyYAML-6.0.1-cp311-cp311-win_amd64.whl", hash = "sha256:bf07ee2fef7014951eeb99f56f39c9bb4af143d8aa3c21b1677805985307da34"},
     {file = "PyYAML-6.0.1-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:855fb52b0dc35af121542a76b9a84f8d1cd886ea97c84703eaa6d88e37a2ad28"},
     {file = "PyYAML-6.0.1-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:40df9b996c2b73138957fe23a16a4f0ba614f4c0efce1e9406a184b6d07fa3a9"},
+    {file = "PyYAML-6.0.1-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a08c6f0fe150303c1c6b71ebcd7213c2858041a7e01975da3a99aed1e7a378ef"},
     {file = "PyYAML-6.0.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6c22bec3fbe2524cde73d7ada88f6566758a8f7227bfbf93a408a9d86bcc12a0"},
     {file = "PyYAML-6.0.1-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:8d4e9c88387b0f5c7d5f281e55304de64cf7f9c0021a3525bd3b1c542da3b0e4"},
     {file = "PyYAML-6.0.1-cp312-cp312-win32.whl", hash = "sha256:d483d2cdf104e7c9fa60c544d92981f12ad66a457afae824d146093b8c294c54"},
@@ -1329,23 +1340,6 @@ urllib3 = ">=1.21.1,<3"
 [package.extras]
 socks = ["PySocks (>=1.5.6,!=1.5.7)"]
 use-chardet-on-py3 = ["chardet (>=3.0.2,<6)"]
-
-[[package]]
-name = "rfc3986"
-version = "1.5.0"
-description = "Validating URI References per RFC 3986"
-optional = false
-python-versions = "*"
-files = [
-    {file = "rfc3986-1.5.0-py2.py3-none-any.whl", hash = "sha256:a86d6e1f5b1dc238b218b012df0aa79409667bb209e58da56d0b94704e712a97"},
-    {file = "rfc3986-1.5.0.tar.gz", hash = "sha256:270aaf10d87d0d4e095063c65bf3ddbc6ee3d0b226328ce21e036f946e421835"},
-]
-
-[package.dependencies]
-idna = {version = "*", optional = true, markers = "extra == \"idna2008\""}
-
-[package.extras]
-idna2008 = ["idna"]
 
 [[package]]
 name = "s3transfer"
@@ -1621,4 +1615,4 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "36c1260968e960638e175386d889f6b760ee51fd74114e0e7d7513a6a1aa4a63"
+content-hash = "0f8abe759650b243bf4b516e906d06aae3503b699a71257d92c60c67d5674c52"
