@@ -2,7 +2,7 @@
 name = "export-job"
 version = "5.0.2"
 description = ""
-authors = ["Mingfei Shao <mshao1@uchicago.edu>"]
+authors = ["Mingfei Shao"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
