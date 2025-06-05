@@ -44,10 +44,13 @@ async def build_manifest_from_study_ids(hostname, token, study_ids, file_manifes
     manifest = []
     manifest_external_files = []
     if file_manifest:
-        # TODO: could split the manifest or create a new function to split manifest
         print("Got file manifest from input")
         print(json.dumps(file_manifest, indent=2))
-        manifest = file_manifest
+        for metadata_item in file_manifest:
+            if "file_retriever" in metadata_item:
+                manifest_external_files.append(metadata_item)
+            else:
+                manifest.append(metadata_item)
 
     if study_ids:
         print(f"Assembling manifest for study ids: {study_ids}")
