@@ -76,7 +76,7 @@ async def build_manifest_from_study_ids(hostname, token, study_ids, file_manifes
             and not study["gen3_discovery"]["external_file_metadata"]
         ):
             print(
-                f"Study {study} is missing '__manifest' and 'external_file_metadata'. Skipping"
+                f"Study {study} is missing '__manifest' and 'external_file_metadata'. Skipping."
             )
         else:
             if study["gen3_discovery"].get("__manifest"):
