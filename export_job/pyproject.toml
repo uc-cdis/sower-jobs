@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "export-job"
-version = "5.0.2"
+version = "5.0.3"
 description = ""
 authors = ["Mingfei Shao <mshao1@uchicago.edu>"]
 readme = "README.md"
