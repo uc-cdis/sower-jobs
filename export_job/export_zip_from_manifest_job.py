@@ -154,16 +154,13 @@ def upload_export_to_s3(bucket_name, username):
     """
 
     s3_client = boto3.client("s3", config=Config(signature_version="s3v4"))
-    print("S3 client created")
 
     export_key = f"{quote_plus(username)}-export.zip"
     s3_client.upload_file("export.zip", bucket_name, export_key)
-    print("S3 - zip file uploaded")
 
     url = s3_client.generate_presigned_url(
         "get_object", Params={"Bucket": bucket_name, "Key": export_key}, ExpiresIn=3600
     )
-    print("S3 - pre-signed url created")
 
     return url
 
