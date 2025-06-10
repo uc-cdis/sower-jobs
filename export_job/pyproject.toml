@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "export-job"
-version = "5.0.2"
+version = "5.0.3"
 description = ""
 authors = ["Mingfei Shao <mshao1@uchicago.edu>"]
 readme = "README.md"
@@ -8,9 +8,10 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.9"
 gen3 = "^4.27.1"
-boto3 = "^1.0.0"
+boto3 = "<2.0"
 cdiserrors = "^1.0.0"
 urllib3 = "<=2.2.2"
+heal-sdk = ">=1.0.0"
 
 
 [build-system]
