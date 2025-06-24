@@ -32,7 +32,9 @@ DEFAULT_ERROR_MESSAGE = (
 )
 
 
-async def build_manifest_from_study_ids(hostname, token, study_ids, file_manifest):
+async def build_manifest_from_study_ids(
+    hostname, token, study_ids, file_manifest, external_file_metadata=None
+):
     """
     build a manifest from a list of metadata guids representing study ids
     if supplied with a file manifest, incorporate it in the final manifest file
@@ -45,11 +47,11 @@ async def build_manifest_from_study_ids(hostname, token, study_ids, file_manifes
     if file_manifest:
         print("Got file manifest from input")
         print(json.dumps(file_manifest, indent=2))
-        for metadata_item in file_manifest:
-            if "file_retriever" in metadata_item:
-                manifest_external_files.append(metadata_item)
-            else:
-                manifest.append(metadata_item)
+        manifest = file_manifest
+    if external_file_metadata:
+        print("Got external_file_metadata from input")
+        print(json.dumps(external_file_metadata, indent=2))
+        manifest_external_files = external_file_metadata
 
     if study_ids:
         print(f"Assembling manifest for study ids: {study_ids}")
