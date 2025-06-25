@@ -33,7 +33,7 @@ DEFAULT_ERROR_MESSAGE = (
 
 
 async def build_manifest_from_study_ids(
-    hostname, token, study_ids, file_manifest, external_file_metadata=None
+    hostname, token, study_ids, file_manifest, external_file_metadata
 ):
     """
     build a manifest from a list of metadata guids representing study ids
@@ -192,8 +192,9 @@ if __name__ == "__main__":
 
     study_ids = input_data.get("study_ids", None)
     file_manifest = input_data.get("file_manifest", None)
-    if not study_ids and not file_manifest:
-        print("Both input parameter 'study_ids' and 'file_manifest' are missing")
+    external_file_metadata = input_data.get("external_file_metadata", None)
+    if not study_ids and not file_manifest and not external_file_metadata:
+        print("Missing 'study_ids', 'file_manifest', and 'external_file_metadata'")
         fail(
             "No studies or files provided. Please select some studies or files and try again."
         )
@@ -214,7 +215,7 @@ if __name__ == "__main__":
         asyncio.set_event_loop(loop)
         loop.run_until_complete(
             build_manifest_from_study_ids(
-                hostname, access_token, study_ids, file_manifest
+                hostname, access_token, study_ids, file_manifest, external_file_metadata
             )
         )
     except Exception as e:
