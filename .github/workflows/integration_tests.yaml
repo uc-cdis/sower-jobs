@@ -9,7 +9,7 @@ jobs:
     with:
       QUAY_REPO: "metadata-manifest-ingestion,get-dbgap-metadata,manifest-indexing,download-indexd-manifest"
       SERVICE_TO_TEST: sower
-      TEST_REPO: chore/stabilize_flaky_tests
+      TEST_REPO_BRANCH: chore/stabilize_flaky_tests
     secrets:
       CI_AWS_ACCESS_KEY_ID: ${{ secrets.CI_AWS_ACCESS_KEY_ID }}
       CI_AWS_SECRET_ACCESS_KEY: ${{ secrets.CI_AWS_SECRET_ACCESS_KEY }}
