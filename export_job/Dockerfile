@@ -1,9 +1,11 @@
-FROM quay.io/cdis/python:python3.9-buster-2.0.0
+ARG AZLINUX_BASE_VERSION=3.13-buildbase
+
+FROM quay.io/cdis/amazonlinux-base:${AZLINUX_BASE_VERSION}
 
 RUN pip install --upgrade pip && pip3 install poetry
 RUN poetry config virtualenvs.create false
 
-COPY *.py /gen3/
+COPY --chown=gen3:gen3 *.py /gen3/
 COPY pyproject.toml /gen3/
 COPY poetry.lock /gen3/
 
