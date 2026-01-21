@@ -1,7 +1,9 @@
-FROM quay.io/cdis/python:python3.6-buster-pybase3-3.0.2
+ARG AZLINUX_BASE_VERSION=3.13-buildbase
 
-RUN pip install gen3==2.4.0
-RUN pip install boto3==1.11.11
+FROM quay.io/cdis/amazonlinux-base:${AZLINUX_BASE_VERSION}
+
+RUN pip install gen3>=2.4.0
+RUN pip install boto3>=1.41.3
 
 RUN apt-get update
 RUN apt-get install -y git
