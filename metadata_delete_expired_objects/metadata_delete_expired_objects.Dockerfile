@@ -1,4 +1,6 @@
-FROM quay.io/cdis/python:python3.9-buster-2.0.0
+ARG AZLINUX_BASE_VERSION=3.13-buildbase
+
+FROM quay.io/cdis/amazonlinux-base:${AZLINUX_BASE_VERSION}
 
 RUN pip install "gen3>=4.16.0,<5.0.0"
 
