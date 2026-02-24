@@ -1,11 +1,9 @@
-FROM quay.io/cdis/python:python3.6-buster-pybase3-3.0.2
+ARG AZLINUX_BASE_VERSION=3.13-buildbase
 
-RUN pip install gen3==2.4.0
-RUN pip install boto3==1.11.11
+FROM quay.io/cdis/amazonlinux-base:${AZLINUX_BASE_VERSION}
 
-RUN apt-get update
-RUN apt-get install -y git
-RUN apt install -y pipenv
+RUN python3.13 -m pip install --upgrade pip
+RUN pip3 install pipenv
 
 COPY . /gen3
 
@@ -19,6 +17,8 @@ RUN git clone https://github.com/uc-cdis/dbgap-extract.git \
     && tag=$(git describe --tags `git rev-list --max-count=1 --tags`) \
     && git checkout $tag -b latest \
     && pipenv install \
+    && pipenv install gen3>=2.4.0 \
+    && pipenv install boto3>=1.41.3 \
     && cd ..
 
 ENTRYPOINT [ "python" ]

@@ -1,16 +1,17 @@
 [tool.poetry]
 name = "export-job"
-version = "5.0.3"
+version = "6.0.0"
 description = ""
 authors = ["Mingfei Shao <mshao1@uchicago.edu>"]
-readme = "README.md"
+# readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
-python = "^3.9"
-gen3 = "^4.27.1"
+python = ">=3.13, <4"
+gen3 = ">=4.27.1"
 boto3 = "<2.0"
-cdiserrors = "^1.0.0"
-urllib3 = "<=2.2.2"
+cdiserrors = ">=1.0.0"
+urllib3 = ">=2.6.2"
 heal-sdk = ">=1.0.0"
 
 
