@@ -12,7 +12,7 @@ gen3 = ">=4.27.1"
 boto3 = "<2.0"
 cdiserrors = ">=1.0.0"
 urllib3 = ">=2.6.2"
-heal-sdk = ">=1.0.0"
+heal-sdk = { git = "https://github.com/uc-cdis/heal-platform-sdk.git", branch = "chore/filepath" }
 
 
 [build-system]
