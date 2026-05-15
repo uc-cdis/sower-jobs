@@ -153,7 +153,6 @@ def download_files(access_token, hostname, output_dir=EXPORT_DIR):
 def download_files_from_file_metadata(file_metadata, access_token, hostname):
     for folder_key, file_manifest_dict in file_metadata.items():
         has_item_to_download = False
-        print(json.dumps(file_manifest_dict, indent=2))
         if "file_manifest" in file_manifest_dict:
             write_manifest_to_temp_file(file_manifest_dict.get("file_manifest", []))
             has_item_to_download = True
