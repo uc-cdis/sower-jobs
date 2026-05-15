@@ -238,10 +238,10 @@ if __name__ == "__main__":
         print(f"Unable to authorize user from access token -- {e}")
         fail("Unable to authorize user.")
 
+    zip_filename = input_data.get("zip_filename", None)
     file_metadata = input_data.get("file_metadata", None)
     if file_metadata:
         print("Got 'file_metadata' from input")
-
         try:
             download_files_from_file_metadata(file_metadata, access_token, hostname)
             shutil.make_archive(EXPORT_DIR, "zip", EXPORT_DIR)
@@ -283,7 +283,9 @@ if __name__ == "__main__":
             fail()
 
     try:
-        presigned_url = upload_export_to_s3(bucket_name, username)
+        presigned_url = upload_export_to_s3(
+            bucket_name, username, filename=zip_filename
+        )
     except Exception as e:
         print(f"Export to s3 failed {repr(e)}")
         fail()
