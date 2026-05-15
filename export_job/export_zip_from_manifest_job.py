@@ -31,8 +31,11 @@ DEFAULT_ERROR_MESSAGE = (
     "Unable to complete this download. Please try again later, or use the Gen3 client."
 )
 
-def write_manifest_to_temp_file(manifest, is_external_files = False):
-    print(f"Assembled {'manifest of external files' if is_external_files else 'manifest'} for download")
+
+def write_manifest_to_temp_file(manifest, is_external_files=False):
+    print(
+        f"Assembled {'manifest of external files' if is_external_files else 'manifest'} for download"
+    )
     print(json.dumps(manifest, indent=2))
     download_size = sum(file.get("file_size", 0) for file in manifest)
     if download_size > MAX_DOWNLOAD_SIZE:
@@ -41,9 +44,12 @@ def write_manifest_to_temp_file(manifest, is_external_files = False):
             "which exceeds the download limit of 250 MB. "
             "Please deselect some studies and try again, or use the Gen3 client."
         )
-    temp_manifest_file_to_write = MANIFEST_FILENAME_EXTERNAL_FILES if is_external_files else MANIFEST_FILENAME
+    temp_manifest_file_to_write = (
+        MANIFEST_FILENAME_EXTERNAL_FILES if is_external_files else MANIFEST_FILENAME
+    )
     with open(temp_manifest_file_to_write, "w") as f:
         json.dump(manifest, f)
+
 
 async def build_manifests(
     hostname, token, study_ids, file_manifest, external_file_metadata
@@ -110,6 +116,7 @@ async def build_manifests(
     write_manifest_to_temp_file(manifest)
     write_manifest_to_temp_file(manifest_external_files, is_external_files=True)
 
+
 def download_files(access_token, hostname, output_dir=EXPORT_DIR):
     """
     download the files described by the local manifest and export them to a zip
@@ -150,39 +157,45 @@ def download_files_from_file_metadata(file_metadata, access_token, hostname):
             write_manifest_to_temp_file(file_manifest_dict.file_manifest)
             has_item_to_download = True
         if "external_file_metadata" in file_manifest_dict:
-            write_manifest_to_temp_file(file_manifest_dict.external_file_metadata, is_external_files=True)
+            write_manifest_to_temp_file(
+                file_manifest_dict.external_file_metadata, is_external_files=True
+            )
             has_item_to_download = True
         if has_item_to_download:
-            download_files(access_token, hostname, output_dir=f"{EXPORT_DIR}/{folder_key}")
+            download_files(
+                access_token, hostname, output_dir=f"{EXPORT_DIR}/{folder_key}"
+            )
 
 
-def upload_export_to_s3(bucket_name, username, filename = None):
+def upload_export_to_s3(bucket_name, username, filename=None):
     """
     Uploads the local zip export to S3 and returns a presigned URL, expires after 1 hour.
     """
 
     s3_client = boto3.client("s3", config=Config(signature_version="s3v4"))
     export_key = f"{quote_plus(username)}-export.zip"
-    content_disposition = f'attachment; filename="{filename if filename else export_key}.zip"'
+    content_disposition = (
+        f'attachment; filename="{filename if filename else export_key}"'
+    )
 
     s3_client.upload_file(
-        Filename = "export.zip",
-        Bucket = bucket_name,
-        Key = export_key,
+        Filename="export.zip",
+        Bucket=bucket_name,
+        Key=export_key,
         ExtraArgs={
-            'ContentDisposition': content_disposition,
-            'ContentType': 'application/zip'  
-        }
+            "ContentDisposition": content_disposition,
+            "ContentType": "application/zip",
+        },
     )
 
     url = s3_client.generate_presigned_url(
         "get_object",
         Params={
-            "Bucket": bucket_name, 
+            "Bucket": bucket_name,
             "Key": export_key,
-            "ResponseContentDisposition": content_disposition
-        }, 
-        ExpiresIn=3600
+            "ResponseContentDisposition": content_disposition,
+        },
+        ExpiresIn=3600,
     )
 
     return url
@@ -233,7 +246,7 @@ if __name__ == "__main__":
         except Exception as e:
             print(f"Unable to download files from file metadata: {repr(e)}")
             fail()
-        
+
     else:
         study_ids = input_data.get("study_ids", None)
         file_manifest = input_data.get("file_manifest", None)
@@ -249,7 +262,11 @@ if __name__ == "__main__":
             asyncio.set_event_loop(loop)
             loop.run_until_complete(
                 build_manifests(
-                    hostname, access_token, study_ids, file_manifest, external_file_metadata
+                    hostname,
+                    access_token,
+                    study_ids,
+                    file_manifest,
+                    external_file_metadata,
                 )
             )
         except Exception as e:
