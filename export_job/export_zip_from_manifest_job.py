@@ -154,9 +154,11 @@ def download_files_from_file_metadata(file_metadata, access_token, hostname):
     for folder_key, file_manifest_dict in file_metadata.items():
         has_item_to_download = False
         if "file_manifest" in file_manifest_dict:
+            print("Updating file manifest temporary file")
             write_manifest_to_temp_file(file_manifest_dict.get("file_manifest", []))
             has_item_to_download = True
         if "external_file_metadata" in file_manifest_dict:
+            print("Updating external file metadata temporary file")
             write_manifest_to_temp_file(
                 file_manifest_dict.get("external_file_metadata", []),
                 is_external_files=True,
@@ -166,6 +168,7 @@ def download_files_from_file_metadata(file_metadata, access_token, hostname):
             download_files(
                 access_token, hostname, output_dir=f"{EXPORT_DIR}/{folder_key}"
             )
+        print("Finished downloading files from file metadata")
 
 
 def upload_export_to_s3(bucket_name, username, filename=None):
