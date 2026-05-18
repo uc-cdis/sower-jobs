@@ -20,7 +20,6 @@ from urllib.parse import quote_plus
 
 from temporary_api_key import TemporaryAPIKey
 
-
 CHUNK_SIZE = 10
 MANIFEST_FILENAME = "manifest.json"
 MANIFEST_FILENAME_EXTERNAL_FILES = "manifest_external_files.json"
@@ -130,24 +129,28 @@ def download_files(access_token, hostname, output_dir=EXPORT_DIR):
         auth = Gen3Auth(refresh_file=TemporaryAPIKey.file_name)
 
         # internal
-        list_files_in_drs_manifest(hostname, auth, MANIFEST_FILENAME)
-        list_access_in_drs_manifest(hostname, auth, MANIFEST_FILENAME)
-        download_files_in_drs_manifest(hostname, auth, MANIFEST_FILENAME, output_dir)
+        if os.path.isfile(MANIFEST_FILENAME):
+            list_files_in_drs_manifest(hostname, auth, MANIFEST_FILENAME)
+            list_access_in_drs_manifest(hostname, auth, MANIFEST_FILENAME)
+            download_files_in_drs_manifest(
+                hostname, auth, MANIFEST_FILENAME, output_dir
+            )
 
         # external
-        with open(MANIFEST_FILENAME_EXTERNAL_FILES, "r") as json_file:
-            external_file_metadata = json.load(json_file)
-        if len(external_file_metadata) > 0:
-            download_status = download_files_from_metadata(
-                hostname=hostname,
-                auth=auth,
-                external_file_metadata=external_file_metadata,
-                retrievers=retrievers,
-                download_path=output_dir,
-            )
-            print(f"External file download status '{download_status}'")
-        else:
-            print("No data in manifest file for external files - skipping")
+        if os.path.isfile(MANIFEST_FILENAME_EXTERNAL_FILES):
+            with open(MANIFEST_FILENAME_EXTERNAL_FILES, "r") as json_file:
+                external_file_metadata = json.load(json_file)
+            if len(external_file_metadata) > 0:
+                download_status = download_files_from_metadata(
+                    hostname=hostname,
+                    auth=auth,
+                    external_file_metadata=external_file_metadata,
+                    retrievers=retrievers,
+                    download_path=output_dir,
+                )
+                print(f"External file download status '{download_status}'")
+            else:
+                print("No data in manifest file for external files - skipping")
 
 
 def download_files_from_file_metadata(file_metadata, access_token, hostname):
