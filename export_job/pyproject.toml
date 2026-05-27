@@ -2,7 +2,7 @@
 name = "export-job"
 version = "6.1.0"
 description = ""
-authors = ["Mingfei Shao <mshao1@uchicago.edu>"]
+authors = ["Center for Translational Data Science at the University of Chicago <support@gen3.org>"]
 # readme = "README.md"
 package-mode = false
 
