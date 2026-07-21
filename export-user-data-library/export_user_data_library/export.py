@@ -64,13 +64,7 @@ class ListExporter:
 
         user_list = resp.json()
 
-        # Extract items from the list response
-        # The API response structure is: {"lists": {"<list_id>": {"items": {...}}}}
-        # We need to extract just the items from this list
-        if "lists" in user_list and self.list_id in user_list["lists"]:
-            return user_list["lists"][self.list_id].get("items", {})
-
-        return user_list
+        return user_list.get("items", {})
 
 
 class ItemExporter(ABC):
@@ -99,7 +93,10 @@ class Gen3GraphQLItemExporter(ItemExporter):
         return (
             await self.jobs.async_run_job_and_wait(
                 "pelican",
-                {"action": "export", "input": item_config["variables"]["filter"]},
+                {
+                    "action": "export",
+                    "input": item_config["data"]["variables"]["filter"],
+                },
             )
         ).get("output")
 
@@ -114,10 +111,10 @@ class Ga4ghDrsItemExporter(ItemExporter):
         self.file = Gen3File(auth_provider=auth)
 
     async def export(self, item_name: str, item_config: dict[str, Any]) -> str:
-        return await asyncio.to_thread(self.file.get_presigned_url, item_name)
+        resp = await asyncio.to_thread(self.file.get_presigned_url, item_name)
+        return resp["url"]
 
 
-# Add new list item handlers here
 EXPORTERS: dict[str, type[ItemExporter]] = {
     "Gen3GraphQL": Gen3GraphQLItemExporter,
     "GA4GH_DRS": Ga4ghDrsItemExporter,

@@ -27,8 +27,10 @@ EXPECTED_GRAPHQL_ITEM_1 = {
     "type": "Gen3GraphQL",
     "name": "GraphQL Export 1",
     "schema_version": "1.0",
-    "query": "{ project { code } }",
-    "variables": {"filter": {"project": {"code": "TEST"}}},
+    "data": {
+        "query": "{ project { code } }",
+        "variables": {"filter": {"project": {"code": "TEST"}}},
+    },
     "guid": "graphql-item-1",
     "url": "http://job-output-1",
 }
@@ -37,8 +39,10 @@ EXPECTED_GRAPHQL_ITEM_2 = {
     "type": "Gen3GraphQL",
     "name": "GraphQL Export 2",
     "schema_version": "1.0",
-    "query": "{ subject { submitter_id } }",
-    "variables": {"filter": {}},
+    "data": {
+        "query": "{ subject { submitter_id } }",
+        "variables": {"filter": {}},
+    },
     "guid": "graphql-item-2",
     "url": "http://job-output-2",
 }
@@ -71,11 +75,19 @@ async def test_list_exporter_ga4gh_drs_items(
         },
     }
 
-    mock_response.json.return_value = {"lists": {"test-list-id": {"items": list_items}}}
+    mock_response.json.return_value = {
+        "id": "test-list-id",
+        "items": list_items,
+        "name": "Test List",
+        "version": 0,
+        "creator": "1",
+        "created_time": "2026-07-20T23:54:40.124502+00:00",
+        "updated_time": "2026-07-20T23:00:03.532006+00:00",
+    }
 
     mock_file_instance.get_presigned_url.side_effect = [
-        "http://presigned-url-1",
-        "http://presigned-url-2",
+        {"url": "http://presigned-url-1"},
+        {"url": "http://presigned-url-2"},
     ]
 
     exporter = ListExporter(mock_config)
@@ -101,19 +113,31 @@ async def test_list_exporter_graphql_items(
             "type": "Gen3GraphQL",
             "name": "GraphQL Export 1",
             "schema_version": "1.0",
-            "query": "{ project { code } }",
-            "variables": {"filter": {"project": {"code": "TEST"}}},
+            "data": {
+                "query": "{ project { code } }",
+                "variables": {"filter": {"project": {"code": "TEST"}}},
+            },
         },
         "graphql-item-2": {
             "type": "Gen3GraphQL",
             "name": "GraphQL Export 2",
             "schema_version": "1.0",
-            "query": "{ subject { submitter_id } }",
-            "variables": {"filter": {}},
+            "data": {
+                "query": "{ subject { submitter_id } }",
+                "variables": {"filter": {}},
+            },
         },
     }
 
-    mock_response.json.return_value = {"lists": {"test-list-id": {"items": list_items}}}
+    mock_response.json.return_value = {
+        "id": "test-list-id",
+        "items": list_items,
+        "name": "Test List",
+        "version": 0,
+        "creator": "1",
+        "created_time": "2026-07-20T23:54:40.124502+00:00",
+        "updated_time": "2026-07-20T23:00:03.532006+00:00",
+    }
 
     mock_jobs_instance.async_run_job_and_wait.side_effect = [
         {"output": "http://job-output-1"},
@@ -151,14 +175,26 @@ async def test_list_exporter_mixed_item_types(
             "type": "Gen3GraphQL",
             "name": "GraphQL Export 1",
             "schema_version": "1.0",
-            "query": "{ project { code } }",
-            "variables": {"filter": {"project": {"code": "TEST"}}},
+            "data": {
+                "query": "{ project { code } }",
+                "variables": {"filter": {"project": {"code": "TEST"}}},
+            },
         },
     }
 
-    mock_response.json.return_value = {"lists": {"test-list-id": {"items": list_items}}}
+    mock_response.json.return_value = {
+        "id": "test-list-id",
+        "items": list_items,
+        "name": "Test List",
+        "version": 0,
+        "creator": "1",
+        "created_time": "2026-07-20T23:54:40.124502+00:00",
+        "updated_time": "2026-07-20T23:00:03.532006+00:00",
+    }
 
-    mock_file_instance.get_presigned_url.return_value = "http://presigned-url-1"
+    mock_file_instance.get_presigned_url.return_value = {
+        "url": "http://presigned-url-1"
+    }
     mock_jobs_instance.async_run_job_and_wait.return_value = {
         "output": "http://job-output-1"
     }
@@ -204,21 +240,35 @@ async def test_list_exporter_filtered_items(
             "type": "Gen3GraphQL",
             "name": "GraphQL Export 1",
             "schema_version": "1.0",
-            "query": "{ project { code } }",
-            "variables": {"filter": {"project": {"code": "TEST"}}},
+            "data": {
+                "query": "{ project { code } }",
+                "variables": {"filter": {"project": {"code": "TEST"}}},
+            },
         },
         "graphql-item-2": {
             "type": "Gen3GraphQL",
             "name": "GraphQL Export 2",
             "schema_version": "1.0",
-            "query": "{ subject { submitter_id } }",
-            "variables": {"filter": {}},
+            "data": {
+                "query": "{ subject { submitter_id } }",
+                "variables": {"filter": {}},
+            },
         },
     }
 
-    mock_response.json.return_value = {"lists": {"test-list-id": {"items": list_items}}}
+    mock_response.json.return_value = {
+        "id": "test-list-id",
+        "items": list_items,
+        "name": "Test List",
+        "version": 0,
+        "creator": "1",
+        "created_time": "2026-07-20T23:54:40.124502+00:00",
+        "updated_time": "2026-07-20T23:00:03.532006+00:00",
+    }
 
-    mock_file_instance.get_presigned_url.return_value = "http://presigned-url-1"
+    mock_file_instance.get_presigned_url.return_value = {
+        "url": "http://presigned-url-1"
+    }
     mock_jobs_instance.async_run_job_and_wait.return_value = {
         "output": "http://job-output-1"
     }

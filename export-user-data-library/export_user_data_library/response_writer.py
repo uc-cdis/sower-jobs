@@ -14,7 +14,7 @@ class SowerResponseWriter(ResponseWriter):
     """
 
     def write(self, result) -> None:
-        print(f"[out]{json.dumps(result)}")
+        print(f"[out] {json.dumps(result)}")
 
 
 class TesResponseWriter(ResponseWriter):

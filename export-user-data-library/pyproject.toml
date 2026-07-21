@@ -3,7 +3,6 @@ name = "export-user-data-library"
 version = "1.0.0"
 description = ""
 authors = ["Center for Translational Data Science at the University of Chicago <support@gen3.org>"]
-# readme = "README.md"
 packages = [{include = "export_user_data_library"}]
 
 [tool.poetry.dependencies]
