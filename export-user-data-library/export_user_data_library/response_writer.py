@@ -14,7 +14,10 @@ class SowerResponseWriter(ResponseWriter):
     """
 
     def write(self, result) -> None:
-        print(f"[out] {json.dumps(result)}")
+        if type(result) == dict:
+            print(f"[out] {json.dumps(result)}")
+        else:
+            print(f"[out] {result}")
 
 
 class TesResponseWriter(ResponseWriter):

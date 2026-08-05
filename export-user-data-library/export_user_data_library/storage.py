@@ -15,10 +15,10 @@ class StorageClient(ABC):
 
 class S3StorageClient(StorageClient):
     def __init__(self, creds):
-        for k in ["bucket_name", "aws_access_key_id", "aws_secret_access_key"]:
-            assert creds.get(k), f"Missing key '{k}'"
+        for k in ["manifest_bucket_name", "aws_access_key_id", "aws_secret_access_key"]:
+            assert creds.get(k), f"Missing key {k}"
 
-        bucket_name = creds["bucket_name"]
+        bucket_name = creds["manifest_bucket_name"]
         aws_access_key_id = creds["aws_access_key_id"]
         aws_secret_access_key = creds["aws_secret_access_key"]
 

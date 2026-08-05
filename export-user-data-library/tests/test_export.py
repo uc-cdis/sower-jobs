@@ -12,7 +12,7 @@ EXPECTED_DRS_ITEM_1 = {
     "display_name": "Test Item 1",
     "description": "A test item",
     "guid": "dg.4503/item1",
-    "url": "http://presigned-url-1",
+    "signed_url": "http://presigned-url-1",
 }
 
 EXPECTED_DRS_ITEM_2 = {
@@ -20,7 +20,7 @@ EXPECTED_DRS_ITEM_2 = {
     "dataset_guid": "phs000008.v36.p17.c2",
     "display_name": "Test Item 2",
     "guid": "dg.4503/item2",
-    "url": "http://presigned-url-2",
+    "signed_url": "http://presigned-url-2",
 }
 
 EXPECTED_GRAPHQL_ITEM_1 = {
@@ -32,7 +32,7 @@ EXPECTED_GRAPHQL_ITEM_1 = {
         "variables": {"filter": {"project": {"code": "TEST"}}},
     },
     "guid": "graphql-item-1",
-    "url": "http://job-output-1",
+    "signed_url": "http://job-output-1",
 }
 
 EXPECTED_GRAPHQL_ITEM_2 = {
@@ -44,7 +44,7 @@ EXPECTED_GRAPHQL_ITEM_2 = {
         "variables": {"filter": {}},
     },
     "guid": "graphql-item-2",
-    "url": "http://job-output-2",
+    "signed_url": "http://job-output-2",
 }
 
 

@@ -16,7 +16,6 @@ logger = get_logger(__name__)
 
 
 async def main():
-    # TODO Read output, response writer from config
     config = EnvConfigProvider()
     list_exporter = ListExporter(config=config)
     if os.path.isfile("/export-user-data-library-creds.json"):
@@ -34,7 +33,7 @@ async def main():
     response_writer = SowerResponseWriter()
 
     result = await list_exporter.export()
-    url = await output_format.write(result)
+    url = output_format.write(result)
     response_writer.write(url)
 
 

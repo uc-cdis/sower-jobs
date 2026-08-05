@@ -41,7 +41,7 @@ class ListExporter:
                 continue
             exporter: ItemExporter = get_exporter(item["type"], self.auth)
             url = await exporter.export(name, item)
-            item_export = {**item, **{"url": url, "guid": name}}
+            item_export = {**item, **{"signed_url": url, "guid": name}}
             result.append(item_export)
 
         return result
