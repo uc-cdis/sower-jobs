@@ -1,2 +1,4 @@
 .dccache
 .vscode/settings.json
+.idea
+__pycache__
