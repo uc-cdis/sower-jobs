@@ -80,3 +80,14 @@ jobs:
       ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
       QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
       QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}
+  export-user-data-library:
+    uses: uc-cdis/.github/.github/workflows/image_build_push.yaml@master
+    with:
+      OVERRIDE_REPO_NAME: "export-user-data-library"
+      DOCKERFILE_LOCATION: "./export-user-data-library/Dockerfile"
+      DOCKERFILE_BUILD_CONTEXT: "./export-user-data-library"
+    secrets:
+      ECR_AWS_ACCESS_KEY_ID: ${{ secrets.ECR_AWS_ACCESS_KEY_ID }}
+      ECR_AWS_SECRET_ACCESS_KEY: ${{ secrets.ECR_AWS_SECRET_ACCESS_KEY }}
+      QUAY_USERNAME: ${{ secrets.QUAY_USERNAME }}
+      QUAY_ROBOT_TOKEN: ${{ secrets.QUAY_ROBOT_TOKEN }}
