@@ -288,6 +288,10 @@ Export sizes are limited to 250 megabytes and are stored under a user-unique S3 
 
 See [here](/metadata_delete_expired_objects/README.md).
 
+### Metrics Report Job
+
+Writes the monthly Enhanced Metrics report files (logins and downloads per user `sub`) and returns presigned links to them. See [here](/metrics-report/README.md).
+
 ### Kubernetes Secret
 
 The secret `sower-jobs-g3auto` should be setup automatically with Cloud Automation and contains a JSON blob with:
